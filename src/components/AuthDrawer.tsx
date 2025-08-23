@@ -33,6 +33,18 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
   const [error, setError] = useState('');
   const { login, register, sendOtp, verifyOtp } = useAuth();
 
+  // Clear all sensitive input fields when drawer closes
+  const handleClose = () => {
+    setEmail('');
+    setPassword('');
+    setOtp('');
+    setOtpSent(false);
+    setOtpUserId('');
+    setError('');
+    setAuthMode('password');
+    onClose();
+  };
+
   const handleAuthModeChange = (mode: 'password' | 'otp') => {
     setAuthMode(mode);
     setError('');
@@ -67,13 +79,13 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
       try {
         await register(email, password);
         onAuthSuccess();
-        onClose();
+        handleClose();
       } catch (regError: any) {
         if (regError?.code === 409 || (regError?.message && regError.message.toLowerCase().includes('already exists'))) {
           try {
             await login(email, password); // login only needs email, password
             onAuthSuccess();
-            onClose();
+            handleClose();
           } catch (loginError: any) {
             setError('Invalid credentials. Please check the email and password.');
           }
@@ -93,7 +105,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
         } else {
           await verifyOtp(otpUserId, otp); // Use userId from OTP response
           onAuthSuccess();
-          onClose();
+          handleClose();
         }
       } catch (error: any) {
         setError(error.message || 'Authentication failed');
@@ -105,13 +117,13 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
 
   const handleCivicAuthSuccess = () => {
     onAuthSuccess();
-    onClose();
+    handleClose();
   };
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth="sm"
       fullWidth
       slotProps={{
@@ -133,7 +145,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
         <Box sx={{ position: 'relative' }}>
           {/* Close Button */}
           <IconButton
-            onClick={onClose}
+            onClick={handleClose}
             sx={{ position: 'absolute', right: 8, top: 8, zIndex: 1 }}
           >
             <Close />
@@ -219,7 +231,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                         onChange={(e) => setOtp(e.target.value)}
                         variant="outlined"
                         placeholder="6-digit code"
-                        inputProps={{ maxLength: 6 }} // deprecated, but safe for now
+                        slotProps={{ htmlInput: { maxLength: 6 } }}
                         required
                         sx={{ mb: 2 }}
                       />
