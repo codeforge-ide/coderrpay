@@ -16,6 +16,7 @@ interface AuthContextType {
   verifyOtp: (email: string, otp: string) => Promise<void>;
   registerWithOtp: (email: string, otp: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshSession: () => Promise<void>;
   showAuthDrawer: boolean;
   setShowAuthDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -30,23 +31,59 @@ const useAuth = () => {
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with true to check existing session
   const [showAuthDrawer, setShowAuthDrawer] = useState(false);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      const currentUser = await account.get();
+      const userData = mapAppwriteUserToUser(currentUser);
+      setUser(userData);
+      // Store user data in localStorage for persistence
+      localStorage.setItem('user', JSON.stringify(userData));
+    } catch (error) {
+      // No active session, clear any stored user data
+      setUser(null);
+      localStorage.removeItem('user');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Dummy functions to avoid ReferenceError (since you requested syntax only)
   const login = async (email: string, password: string) => {
-  setIsLoading(true);
-  try {
-    await account.createEmailPasswordSession(email, password);
-    const currentUser = await account.get();
-    setUser(mapAppwriteUserToUser(currentUser));
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error;
-  } finally {
-    setIsLoading(false);
-  }
-};
+    setIsLoading(true);
+    try {
+      // Check if there's already an active session
+      try {
+        const existingUser = await account.get();
+        if (existingUser) {
+          const userData = mapAppwriteUserToUser(existingUser);
+          setUser(userData);
+          localStorage.setItem('user', JSON.stringify(userData));
+          return;
+        }
+      } catch {
+        // No existing session, proceed with login
+      }
+
+      await account.createEmailPasswordSession(email, password);
+      const currentUser = await account.get();
+      const userData = mapAppwriteUserToUser(currentUser);
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const syncCivicUserToAppwrite = async (civicUser: any) => {};
   const createCustomJWTForCivicUser = async (civicUser: any) => {};
   const mapAppwriteUserToUser = (user: any) => user;
@@ -54,7 +91,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      await account.create('unique()', email, password, sanitizeUsernameFromEmail(email));
+      // Check if there's already an active session
+      try {
+        const existingUser = await account.get();
+        if (existingUser) {
+          setUser(mapAppwriteUserToUser(existingUser));
+          return;
+        }
+      } catch {
+        // No existing session, proceed with registration
+      }
+
+      try {
+        await account.create('unique()', email, password, sanitizeUsernameFromEmail(email));
+      } catch (error: any) {
+        // If account already exists, try to login instead
+        if (error.code === 409 || error.message?.includes('already exists')) {
+          await login(email, password);
+          return;
+        }
+        throw error;
+      }
+      
       await login(email, password);
     } catch (error) {
       console.error('Registration error:', error);
@@ -67,6 +125,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginWithCivic = async (civicUser: any) => {
     setIsLoading(true);
     try {
+      // Check if there's already an active session
+      try {
+        const existingUser = await account.get();
+        if (existingUser) {
+          setUser({
+            ...mapAppwriteUserToUser(existingUser),
+            provider: 'civic',
+            ethereum_address: civicUser.ethereum?.address,
+          });
+          return;
+        }
+      } catch {
+        // No existing session, proceed with Civic login
+      }
+
       await syncCivicUserToAppwrite(civicUser);
       await createCustomJWTForCivicUser(civicUser);
       const currentUser = await account.get();
@@ -98,6 +171,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const verifyOtp = async (email: string, otp: string) => {
     setIsLoading(true);
     try {
+      // Check if there's already an active session
+      try {
+        const existingUser = await account.get();
+        if (existingUser) {
+          setUser(mapAppwriteUserToUser(existingUser));
+          return;
+        }
+      } catch {
+        // No existing session, proceed with OTP verification
+      }
+
       await account.createSession('unique()', otp);
       const currentUser = await account.get();
       setUser(mapAppwriteUserToUser(currentUser));
@@ -122,6 +206,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const refreshSession = async () => {
+    try {
+      const currentUser = await account.get();
+      setUser(mapAppwriteUserToUser(currentUser));
+    } catch (error) {
+      setUser(null);
+    }
+  };
+
   const logout = async () => {
     try {
       await account.deleteSession('current');
@@ -129,6 +222,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.error('Logout error:', error);
     } finally {
       setUser(null);
+      localStorage.removeItem('user');
     }
   };
 
@@ -146,6 +240,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       verifyOtp,
       registerWithOtp,
       logout,
+      refreshSession,
       showAuthDrawer,
       setShowAuthDrawer,
     }}>
