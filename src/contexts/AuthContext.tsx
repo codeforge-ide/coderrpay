@@ -154,4 +154,4 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export { AuthProvider, useAuth };
+export { AuthProvider, useAuth }; // single named export, no duplicate
