@@ -31,6 +31,12 @@ export const CivicAuthButtons: React.FC<CivicAuthButtonsProps> = ({
     }
   };
 
+  const handleWeb3WalletClick = () => {
+    // Close the auth modal and open Web3 wallet onboarding
+    onClose?.();
+    window.open('https://wallet.web3lancer.website/onboarding', '_blank', 'width=500,height=700,scrollbars=yes,resizable=yes');
+  };
+
   // If user is already authenticated, don't show buttons
   if (user) {
     return null;
@@ -52,7 +58,7 @@ export const CivicAuthButtons: React.FC<CivicAuthButtonsProps> = ({
         fullWidth={fullWidth}
         variant={variant}
         startIcon={<AccountBalanceWallet />}
-        onClick={handleSignIn}
+        onClick={handleWeb3WalletClick}
         disabled={isLoading}
         sx={{ py: 1.5 }}
       >
