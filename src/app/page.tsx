@@ -1,9 +1,23 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { 
+  Typography, 
+  Box, 
+  Card, 
+  CardContent, 
+  Button,
+  Avatar,
+  IconButton,
+  Skeleton
+} from '@mui/material';
+import { 
+  MonetizationOn,
+  Code,
+  GitHub,
+  MoreVert
+} from '@mui/icons-material';
 import { useAppStore } from '@/store/useAppStore';
-import { Skeleton, SkeletonStats, SkeletonActivity } from '@/components/Skeleton';
-import { MoneyIcon, CodeIcon, GithubIcon } from '@/components/Icons';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,149 +31,302 @@ export default function Home() {
   const getActivityIcon = (type: string) => {
     switch (type) {
       case 'sponsorship':
-        return <MoneyIcon className="w-6 h-6 text-current" />;
+        return <MonetizationOn sx={{ color: 'text.primary' }} />;
       case 'hackathon':
-        return <CodeIcon className="w-6 h-6 text-current" />;
+        return <Code sx={{ color: 'text.primary' }} />;
       case 'connection':
-        return <GithubIcon className="w-6 h-6 text-current" />;
+        return <GitHub sx={{ color: 'text.primary' }} />;
       default:
-        return <MoneyIcon className="w-6 h-6 text-current" />;
+        return <MonetizationOn sx={{ color: 'text.primary' }} />;
     }
   };
 
   return (
-    <div className="flex flex-col max-w-[960px] flex-1">
-      <div className="flex flex-wrap justify-between gap-3 p-4">
-        <p className="text-current tracking-light text-[32px] font-bold leading-tight min-w-72">
+    <Box>
+      {/* Page Header */}
+      <Box sx={{ mb: 4 }}>
+        <Typography 
+          variant="h1" 
+          sx={{ 
+            fontSize: '2rem',
+            fontWeight: 700,
+            color: 'text.primary',
+            letterSpacing: '-0.015em'
+          }}
+        >
           Dashboard
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
-      <h3 className="text-current text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">
+      {/* Overview Section */}
+      <Typography 
+        variant="h3" 
+        sx={{ 
+          fontSize: '1.125rem',
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 2,
+          mt: 4
+        }}
+      >
         Overview
-      </h3>
+      </Typography>
 
       {isLoading ? (
-        <div className="p-4">
-          <SkeletonStats />
-        </div>
-      ) : (
-        <div className="flex flex-wrap gap-4 p-4">
-          <div className="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6" style={{ backgroundColor: 'var(--card-bg)' }}>
-            <p className="text-current text-base font-medium leading-normal">Total Earned</p>
-            <p className="text-current tracking-light text-2xl font-bold leading-tight">
-              ${totalEarned.toLocaleString()}
-            </p>
-          </div>
-          <div className="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6" style={{ backgroundColor: 'var(--card-bg)' }}>
-            <p className="text-current text-base font-medium leading-normal">Active Sponsorships</p>
-            <p className="text-current tracking-light text-2xl font-bold leading-tight">
-              {activeSponsorships}
-            </p>
-          </div>
-          <div className="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6" style={{ backgroundColor: 'var(--card-bg)' }}>
-            <p className="text-current text-base font-medium leading-normal">Hackathons Participated</p>
-            <p className="text-current tracking-light text-2xl font-bold leading-tight">
-              {hackathonsParticipated}
-            </p>
-          </div>
-        </div>
-      )}
-
-      <h3 className="text-current text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">
-        Recent Activity
-      </h3>
-
-      {isLoading ? (
-        <div className="px-4">
-          <SkeletonActivity />
-        </div>
-      ) : (
-        <div className="grid grid-cols-[40px_1fr] gap-x-2 px-4">
-          {recentActivity.map((activity, index) => (
-            <React.Fragment key={activity.id}>
-              <div className="flex flex-col items-center gap-1 pt-3">
-                <div className="text-current">
-                  {getActivityIcon(activity.type)}
-                </div>
-                {index < recentActivity.length - 1 && (
-                  <div className="w-[1.5px] h-2 grow" style={{ backgroundColor: 'var(--border-color)' }}></div>
-                )}
-              </div>
-              <div className="flex flex-1 flex-col py-3">
-                <p className="text-current text-base font-medium leading-normal">
-                  {activity.title}
-                </p>
-                <p className="text-current/70 text-base font-normal leading-normal">
-                  {activity.description}
-                </p>
-              </div>
-            </React.Fragment>
+        <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+          {[1, 2, 3].map((i) => (
+            <Card key={i} sx={{ flex: 1, minWidth: 158 }}>
+              <CardContent sx={{ p: 3 }}>
+                <Skeleton height={24} width="60%" sx={{ mb: 1 }} />
+                <Skeleton height={32} width="40%" />
+              </CardContent>
+            </Card>
           ))}
-        </div>
+        </Box>
+      ) : (
+        <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap' }}>
+          <Card sx={{ flex: 1, minWidth: 158 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="body1" sx={{ color: 'text.primary', mb: 1, fontWeight: 500 }}>
+                Total Earned
+              </Typography>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: 'text.primary',
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  letterSpacing: '-0.01em'
+                }}
+              >
+                ${totalEarned.toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ flex: 1, minWidth: 158 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="body1" sx={{ color: 'text.primary', mb: 1, fontWeight: 500 }}>
+                Active Sponsorships
+              </Typography>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: 'text.primary',
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  letterSpacing: '-0.01em'
+                }}
+              >
+                {activeSponsorships}
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ flex: 1, minWidth: 158 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="body1" sx={{ color: 'text.primary', mb: 1, fontWeight: 500 }}>
+                Hackathons Participated
+              </Typography>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: 'text.primary',
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  letterSpacing: '-0.01em'
+                }}
+              >
+                {hackathonsParticipated}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Box>
       )}
 
-      <h3 className="text-current text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">
-        Project Updates
-      </h3>
+      {/* Recent Activity Section */}
+      <Typography 
+        variant="h3" 
+        sx={{ 
+          fontSize: '1.125rem',
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 2,
+          mt: 4
+        }}
+      >
+        Recent Activity
+      </Typography>
 
       {isLoading ? (
-        <div className="p-4 space-y-4">
-          <div className="space-y-3">
-            <Skeleton height="1rem" width="30%" />
-            <Skeleton height="1.5rem" width="60%" />
-            <Skeleton lines={2} height="0.875rem" />
-          </div>
-          <div className="space-y-3">
-            <Skeleton height="1rem" width="30%" />
-            <Skeleton height="1.5rem" width="60%" />
-            <Skeleton lines={2} height="0.875rem" />
-          </div>
-        </div>
+        <Box sx={{ mb: 4 }}>
+          {[1, 2, 3].map((i) => (
+            <Box key={i} sx={{ display: 'grid', gridTemplateColumns: '40px 1fr', gap: 1, mb: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 1 }}>
+                <Skeleton variant="circular" width={24} height={24} />
+                {i < 3 && <Box sx={{ width: '1.5px', height: 16, backgroundColor: 'divider', mt: 0.5 }} />}
+              </Box>
+              <Box sx={{ py: 1 }}>
+                <Skeleton height={20} width="80%" sx={{ mb: 0.5 }} />
+                <Skeleton height={16} width="40%" />
+              </Box>
+            </Box>
+          ))}
+        </Box>
       ) : (
-        <>
-          <div className="p-4">
-            <div className="flex items-stretch justify-between gap-4 rounded-lg">
-              <div className="flex flex-[2_2_0px] flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-current/70 text-sm font-normal leading-normal">Project Alpha</p>
-                  <p className="text-current text-base font-bold leading-tight">Refactor Database Schema</p>
-                  <p className="text-current/70 text-sm font-normal leading-normal">
-                    Updated schema for improved performance and scalability.
-                  </p>
-                </div>
-                <button
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse text-current text-sm font-medium leading-normal w-fit"
-                  style={{ backgroundColor: 'var(--card-bg)' }}
+        <Box sx={{ mb: 4 }}>
+          {recentActivity.map((activity, index) => (
+            <Box key={activity.id} sx={{ display: 'grid', gridTemplateColumns: '40px 1fr', gap: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 1.5 }}>
+                {getActivityIcon(activity.type)}
+                {index < recentActivity.length - 1 && (
+                  <Box sx={{ 
+                    width: '1.5px', 
+                    height: 16, 
+                    backgroundColor: 'divider',
+                    mt: 0.5,
+                    flexGrow: 1 
+                  }} />
+                )}
+              </Box>
+              <Box sx={{ py: 1.5 }}>
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    color: 'text.primary',
+                    fontWeight: 500,
+                    mb: 0.5
+                  }}
                 >
-                  <span className="truncate">View Details</span>
-                </button>
-              </div>
-              <div className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1" style={{ backgroundColor: 'var(--card-bg)' }}></div>
-            </div>
-          </div>
-          <div className="p-4">
-            <div className="flex items-stretch justify-between gap-4 rounded-lg">
-              <div className="flex flex-[2_2_0px] flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-current/70 text-sm font-normal leading-normal">Project Beta</p>
-                  <p className="text-current text-base font-bold leading-tight">Implement New API Endpoints</p>
-                  <p className="text-current/70 text-sm font-normal leading-normal">
-                    Added endpoints for user authentication and data retrieval.
-                  </p>
-                </div>
-                <button
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse text-current text-sm font-medium leading-normal w-fit"
-                  style={{ backgroundColor: 'var(--card-bg)' }}
+                  {activity.title}
+                </Typography>
+                <Typography 
+                  variant="body2" 
+                  sx={{ color: 'text.secondary' }}
                 >
-                  <span className="truncate">View Details</span>
-                </button>
-              </div>
-              <div className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1" style={{ backgroundColor: 'var(--card-bg)' }}></div>
-            </div>
-          </div>
-        </>
+                  {activity.description}
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+        </Box>
       )}
-    </div>
+
+      {/* Project Updates Section */}
+      <Typography 
+        variant="h3" 
+        sx={{ 
+          fontSize: '1.125rem',
+          fontWeight: 700,
+          color: 'text.primary',
+          mb: 2,
+          mt: 4
+        }}
+      >
+        Project Updates
+      </Typography>
+
+      {isLoading ? (
+        <Box sx={{ mb: 4 }}>
+          {[1, 2].map((i) => (
+            <Card key={i} sx={{ mb: 2 }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Box sx={{ flex: 2 }}>
+                    <Skeleton height={16} width="30%" sx={{ mb: 1 }} />
+                    <Skeleton height={24} width="60%" sx={{ mb: 1 }} />
+                    <Skeleton height={16} width="80%" sx={{ mb: 2 }} />
+                    <Skeleton height={32} width={120} />
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 2 }} />
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      ) : (
+        <Box>
+          <Card sx={{ mb: 2 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'stretch' }}>
+                <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+                      Project Alpha
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 700, mb: 0.5 }}>
+                      Refactor Database Schema
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                      Updated schema for improved performance and scalability.
+                    </Typography>
+                  </Box>
+                  <Button 
+                    variant="contained"
+                    size="small"
+                    sx={{ 
+                      alignSelf: 'flex-start',
+                      textTransform: 'none',
+                      fontWeight: 500
+                    }}
+                  >
+                    View Details
+                  </Button>
+                </Box>
+                <Box sx={{ 
+                  flex: 1, 
+                  backgroundColor: 'background.paper',
+                  borderRadius: 2,
+                  minHeight: 120,
+                  border: '1px solid',
+                  borderColor: 'divider'
+                }} />
+              </Box>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ mb: 2 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'stretch' }}>
+                <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+                      Project Beta
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 700, mb: 0.5 }}>
+                      Implement New API Endpoints
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                      Added endpoints for user authentication and data retrieval.
+                    </Typography>
+                  </Box>
+                  <Button 
+                    variant="contained"
+                    size="small"
+                    sx={{ 
+                      alignSelf: 'flex-start',
+                      textTransform: 'none',
+                      fontWeight: 500
+                    }}
+                  >
+                    View Details
+                  </Button>
+                </Box>
+                <Box sx={{ 
+                  flex: 1, 
+                  backgroundColor: 'background.paper',
+                  borderRadius: 2,
+                  minHeight: 120,
+                  border: '1px solid',
+                  borderColor: 'divider'
+                }} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
+    </Box>
   );
 }

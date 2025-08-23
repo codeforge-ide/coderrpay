@@ -1,37 +1,41 @@
 'use client';
 
-import React from 'react';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import DesktopSidebar from './DesktopSidebar';
 import MobileBottomNav from './MobileBottomNav';
-import { ThemeProvider } from './ThemeProvider';
+import AppThemeProvider from './AppThemeProvider';
+
+const drawerWidth = 320;
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
-    <>
-      {/* Desktop Sidebar */}
-      <div className="hidden md:block fixed left-0 top-0 h-full w-80 z-10">
-        <DesktopSidebar />
-      </div>
-      
-      {/* Main Content */}
-      <div className="md:ml-80 min-h-screen">
-        <main className="p-6 pb-24 md:pb-6">
-          {children}
-        </main>
-      </div>
-      
-      {/* Mobile Bottom Navigation */}
-      <div className="md:hidden">
-        <MobileBottomNav />
-      </div>
-    </>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      {isDesktop && <DesktopSidebar />}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          pb: { xs: '100px', md: 3 },
+          maxWidth: '960px',
+          mx: 'auto',
+        }}
+      >
+        {children}
+      </Box>
+      {!isDesktop && <MobileBottomNav />}
+    </Box>
   );
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider>
+    <AppThemeProvider>
       <LayoutContent>{children}</LayoutContent>
-    </ThemeProvider>
+    </AppThemeProvider>
   );
 }

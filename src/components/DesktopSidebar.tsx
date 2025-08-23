@@ -111,9 +111,11 @@ export default function DesktopSidebar() {
                   </ListItemIcon>
                   <ListItemText 
                     primary={item.text}
-                    primaryTypographyProps={{
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
+                    sx={{
+                      '& .MuiTypography-root': {
+                        fontSize: '0.875rem',
+                        fontWeight: 500,
+                      }
                     }}
                   />
                 </ListItemButton>

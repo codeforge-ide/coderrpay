@@ -1,66 +1,80 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { 
-  HomeIcon, 
-  ProjectsIcon, 
-  BountiesIcon, 
-  WalletIcon, 
-  SettingsIcon 
-} from './Icons';
+  Paper, 
+  BottomNavigation, 
+  BottomNavigationAction,
+  Box
+} from '@mui/material';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { 
+  Home,
+  AccountTree,
+  EmojiEvents,
+  AccountBalanceWallet,
+  Settings
+} from '@mui/icons-material';
 
 const navItems = [
-  { label: 'Home', icon: HomeIcon, href: '/' },
-  { label: 'Projects', icon: ProjectsIcon, href: '/projects' },
-  { label: 'Bounties', icon: BountiesIcon, href: '/bounties' },
-  { label: 'Wallet', icon: WalletIcon, href: '/wallet' },
-  { label: 'Settings', icon: SettingsIcon, href: '/settings' },
+  { label: 'Home', icon: Home, href: '/' },
+  { label: 'Projects', icon: AccountTree, href: '/projects' },
+  { label: 'Bounties', icon: EmojiEvents, href: '/bounties' },
+  { label: 'Wallet', icon: AccountBalanceWallet, href: '/wallet' },
+  { label: 'Settings', icon: Settings, href: '/settings' },
 ];
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <div
-      className="fixed bottom-4 left-4 right-4 rounded-3xl shadow-lg z-50"
-      style={{ backgroundColor: 'var(--card-bg)' }}
+    <Box
+      sx={{
+        position: 'fixed',
+        bottom: 16,
+        left: 16,
+        right: 16,
+        zIndex: 1000,
+      }}
     >
-      <div className="flex items-center justify-around py-2">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          const IconComponent = item.icon;
-          
-          return (
-            <Link key={item.label} href={item.href} className="flex-1">
-              <div className="flex flex-col items-center py-2 px-1">
-                <div
-                  className={`p-2 rounded-xl transition-all ${
-                    isActive ? 'scale-110' : 'scale-100'
-                  }`}
-                  style={{
-                    backgroundColor: isActive ? 'var(--accent-color)' : 'transparent',
-                    color: isActive ? 'white' : 'var(--foreground)'
-                  }}
-                >
-                  <IconComponent className="w-5 h-5" />
-                </div>
-                <span 
-                  className={`text-xs mt-1 transition-colors ${
-                    isActive ? 'font-medium' : 'font-normal'
-                  }`}
-                  style={{ 
-                    color: isActive ? 'var(--accent-color)' : 'var(--foreground)'
-                  }}
-                >
-                  {item.label}
-                </span>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </div>
+      <Paper
+        elevation={8}
+        sx={{
+          borderRadius: '24px',
+          overflow: 'hidden',
+          backdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        }}
+      >
+        <BottomNavigation 
+          showLabels 
+          value={pathname}
+          sx={{
+            backgroundColor: 'transparent',
+            '& .MuiBottomNavigationAction-root': {
+              color: 'text.secondary',
+              '&.Mui-selected': {
+                color: 'primary.main',
+              },
+            },
+          }}
+        >
+          {navItems.map((item) => (
+            <BottomNavigationAction
+              key={item.label}
+              label={item.label}
+              icon={<item.icon />}
+              value={item.href}
+              component={Link}
+              href={item.href}
+              sx={{
+                minWidth: 'auto',
+                px: 1,
+              }}
+            />
+          ))}
+        </BottomNavigation>
+      </Paper>
+    </Box>
   );
 }
