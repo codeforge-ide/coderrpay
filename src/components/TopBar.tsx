@@ -9,10 +9,11 @@ import {
 } from '@mui/material';
 import { 
   Message, 
-  AccountBalanceWallet, 
-  Settings 
+  AccountBalanceWallet
 } from '@mui/icons-material';
 import Image from 'next/image';
+import AccountMenu from './AccountMenu';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TopBarProps {
   onMessagesClick: () => void;
@@ -22,6 +23,7 @@ interface TopBarProps {
 
 export default function TopBar({ onMessagesClick, onWalletClick, onSettingsClick }: TopBarProps) {
   const theme = useTheme();
+  const { isAuthenticated } = useAuth();
 
   return (
     <AppBar
@@ -47,35 +49,31 @@ export default function TopBar({ onMessagesClick, onWalletClick, onSettingsClick
 
         {/* Action Icons */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <IconButton
-            onClick={onMessagesClick}
-            sx={{ 
-              color: theme.palette.text.primary,
-              '&:hover': { backgroundColor: theme.palette.action.hover }
-            }}
-          >
-            <Message />
-          </IconButton>
-          
-          <IconButton
-            onClick={onWalletClick}
-            sx={{ 
-              color: theme.palette.text.primary,
-              '&:hover': { backgroundColor: theme.palette.action.hover }
-            }}
-          >
-            <AccountBalanceWallet />
-          </IconButton>
-          
-          <IconButton
-            onClick={onSettingsClick}
-            sx={{ 
-              color: theme.palette.text.primary,
-              '&:hover': { backgroundColor: theme.palette.action.hover }
-            }}
-          >
-            <Settings />
-          </IconButton>
+          {isAuthenticated && (
+            <>
+              <IconButton
+                onClick={onMessagesClick}
+                sx={{ 
+                  color: theme.palette.text.primary,
+                  '&:hover': { backgroundColor: theme.palette.action.hover }
+                }}
+              >
+                <Message />
+              </IconButton>
+              
+              <IconButton
+                onClick={onWalletClick}
+                sx={{ 
+                  color: theme.palette.text.primary,
+                  '&:hover': { backgroundColor: theme.palette.action.hover }
+                }}
+              >
+                <AccountBalanceWallet />
+              </IconButton>
+              
+              <AccountMenu onSettingsClick={onSettingsClick} />
+            </>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
