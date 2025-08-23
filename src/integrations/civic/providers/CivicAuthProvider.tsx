@@ -20,17 +20,8 @@ interface CivicAuthProviderProps {
 }
 
 export const CivicAuthProvider: React.FC<CivicAuthProviderProps> = ({ children }) => {
-  let civicUser: any = { user: null, isLoading: false };
-  
-  // Safely get user from Civic with error handling
-  try {
-    civicUser = useUser();
-  } catch (error) {
-    console.warn('Civic useUser failed, falling back to default state:', error);
-    civicUser = { user: null, isLoading: false };
-  }
-  
-  const { loginWithCivic } = useAuth();
+  const civicUser = useUser(); // Get user from Civic
+  const { loginWithCivic } = useAuth(); // Get Appwrite auth methods
   const [isLoading, setIsLoading] = useState(false);
   const [walletCreationInProgress, setWalletCreationInProgress] = useState(false);
 

@@ -99,32 +99,19 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   );
 }
 
-import { CivicAuthProvider as OfficialCivicAuthProvider } from '@civic/auth/nextjs';
-import { CivicAuthProvider } from '@/integrations/civic/providers/CivicAuthProvider';
-
-function CivicWrapper({ children }: { children: React.ReactNode }) {
-  try {
-    return (
-      <OfficialCivicAuthProvider>
-        {children}
-      </OfficialCivicAuthProvider>
-    );
-  } catch (error) {
-    console.warn('Civic provider initialization failed:', error);
-    return <>{children}</>;
-  }
-}
+import { CivicAuthProvider } from '@civic/auth/nextjs';
+import { CivicAuthProvider as LocalCivicAuthProvider } from '@/integrations/civic/providers/CivicAuthProvider';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AppThemeProvider>
-      <CivicWrapper>
+      <CivicAuthProvider>
         <AuthProvider>
-          <CivicAuthProvider>
+          <LocalCivicAuthProvider>
             <LayoutContent>{children}</LayoutContent>
-          </CivicAuthProvider>
+          </LocalCivicAuthProvider>
         </AuthProvider>
-      </CivicWrapper>
+      </CivicAuthProvider>
     </AppThemeProvider>
   );
 }
