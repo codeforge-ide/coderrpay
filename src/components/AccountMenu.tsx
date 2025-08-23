@@ -22,9 +22,10 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface AccountMenuProps {
   onSettingsClick: () => void;
+  onLoginClick: () => void;
 }
 
-export default function AccountMenu({ onSettingsClick }: AccountMenuProps) {
+export default function AccountMenu({ onSettingsClick, onLoginClick }: AccountMenuProps) {
   const { user, logout, isAuthenticated } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -37,8 +38,8 @@ export default function AccountMenu({ onSettingsClick }: AccountMenuProps) {
     setAnchorEl(null);
   };
 
-  const handleLogout = async () => {
-    await logout();
+  const handleLoginClick = () => {
+    onLoginClick();
     handleClose();
   };
 
