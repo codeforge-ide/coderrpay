@@ -1,18 +1,6 @@
 'use client';
 
-import {
-  Typography,
-  Container,
-  Toolbar,
-  Grid,
-  TextField,
-  Box,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import ProjectCard from '@/components/ProjectCard';
 import { mockProjects } from '@/data/projects';
 
@@ -35,38 +23,38 @@ export default function DiscoverPage() {
     });
 
   return (
-    <Container>
-      <Toolbar />
-      <Typography variant="h4" component="h1" gutterBottom>
-        Discover Projects
-      </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
-        <TextField
-          label="Search Projects"
-          variant="outlined"
+    <div className="flex flex-col max-w-[960px] flex-1">
+      <div className="flex flex-wrap justify-between gap-3 p-4">
+        <p className="text-current tracking-light text-[32px] font-bold leading-tight min-w-72">
+          Discover Projects
+        </p>
+      </div>
+      
+      <div className="flex justify-between gap-4 mb-6 p-4">
+        <input
+          type="text"
+          placeholder="Search Projects"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ width: '70%' }}
+          className="flex-1 p-3 rounded-lg border text-current bg-transparent"
+          style={{ borderColor: 'var(--border-color)' }}
         />
-        <FormControl sx={{ width: '25%' }}>
-          <InputLabel>Sort By</InputLabel>
-          <Select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            label="Sort By"
-          >
-            <MenuItem value="stars">Stars</MenuItem>
-            <MenuItem value="name">Name</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      <Grid container spacing={4}>
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="p-3 rounded-lg border text-current bg-transparent min-w-[120px]"
+          style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--card-bg)' }}
+        >
+          <option value="stars">Sort by Stars</option>
+          <option value="name">Sort by Name</option>
+        </select>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
         {filteredProjects.map((project) => (
-          <Grid item key={project.id} xs={12} sm={6} md={4}>
-            <ProjectCard project={project} />
-          </Grid>
+          <ProjectCard key={project.id} project={project} />
         ))}
-      </Grid>
-    </Container>
+      </div>
+    </div>
   );
 }
