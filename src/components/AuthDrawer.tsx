@@ -8,8 +8,6 @@ import {
   Typography,
   TextField,
   Button,
-  Tabs,
-  Tab,
   IconButton,
   Alert,
 } from '@mui/material';
@@ -25,18 +23,14 @@ interface AuthDrawerProps {
 }
 
 export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerProps) {
-  
   const [authMode, setAuthMode] = useState<'password' | 'otp'>('password');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login, register, sendOtp, verifyOtp, registerWithOtp } = useAuth();
-
-  
+  const { login, register, sendOtp, verifyOtp } = useAuth();
 
   const handleAuthModeChange = (mode: 'password' | 'otp') => {
     setAuthMode(mode);
@@ -50,10 +44,8 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
       setError('Please enter your email address');
       return;
     }
-
     setIsLoading(true);
     setError('');
-    
     try {
       await sendOtp(email);
       setOtpSent(true);
@@ -68,29 +60,42 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
-    try {
-      if (authMode === 'password') {
-        await login(email, password);
+    if (authMode === 'password') {
+      try {
+        await register(email, password, '');
         onAuthSuccess();
         onClose();
-      } else {
-        // OTP mode
+      } catch (regError: any) {
+        if (regError?.code === 409 || (regError?.message && regError.message.toLowerCase().includes('already exists'))) {
+          try {
+            await login(email, password);
+            onAuthSuccess();
+            onClose();
+          } catch (loginError: any) {
+            setError('Invalid credentials. Please check the email and password.');
+          }
+        } else {
+          setError(regError.message || 'Authentication failed');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // OTP mode
+      try {
         if (!otpSent) {
-          // Send OTP first
           await sendOtp(email);
           setOtpSent(true);
         } else {
-          // Verify OTP
           await verifyOtp(email, otp);
           onAuthSuccess();
           onClose();
         }
+      } catch (error: any) {
+        setError(error.message || 'Authentication failed');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error: any) {
-      setError(error.message || 'Authentication failed');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -125,12 +130,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
           {/* Close Button */}
           <IconButton
             onClick={onClose}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              zIndex: 1,
-            }}
+            sx={{ position: 'absolute', right: 8, top: 8, zIndex: 1 }}
           >
             <Close />
           </IconButton>
@@ -153,9 +153,6 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
               Join thousands of developers earning through open source
             </Typography>
           </Box>
-
-          {/* Tabs */}
-          
 
           {/* Auth Mode Toggle */}
           <Box sx={{ px: 4, mb: 2 }}>
@@ -186,10 +183,8 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                 {error}
               </Alert>
             )}
-            
             <form onSubmit={handleSubmit}>
               <Box sx={{ mb: 3 }}>
-                
                 <TextField
                   fullWidth
                   label="Email"
@@ -200,7 +195,6 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                   sx={{ mb: 2 }}
                   required
                 />
-                
                 {authMode === 'password' ? (
                   <TextField
                     fullWidth
@@ -213,34 +207,32 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                   />
                 ) : (
                   <>
-                    
                     {otpSent && (
-  <TextField
-    fullWidth
-    label="Enter OTP"
-    value={otp}
-    onChange={(e) => setOtp(e.target.value)}
-    variant="outlined"
-    placeholder="6-digit code"
-    inputProps={{ maxLength: 6 }}
-    required
-    sx={{ mb: 2 }}
-  />
-)}
-{otpSent && (
-  <Button
-    variant="text"
-    onClick={handleSendOtp}
-    disabled={isLoading}
-    sx={{ mt: 1 }}
-  >
-    Resend OTP
-  </Button>
-)}
+                      <TextField
+                        fullWidth
+                        label="Enter OTP"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        variant="outlined"
+                        placeholder="6-digit code"
+                        inputProps={{ maxLength: 6 }}
+                        required
+                        sx={{ mb: 2 }}
+                      />
+                    )}
+                    {otpSent && (
+                      <Button
+                        variant="text"
+                        onClick={handleSendOtp}
+                        disabled={isLoading}
+                        sx={{ mt: 1 }}
+                      >
+                        Resend OTP
+                      </Button>
+                    )}
                   </>
                 )}
               </Box>
-
               <Button
                 type="submit"
                 fullWidth
@@ -249,22 +241,16 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                 sx={{ mb: 3, py: 1.5 }}
                 disabled={isLoading}
               >
-{isLoading ? 'Loading...' : (
-  authMode === 'otp' && !otpSent ? 'Send OTP' :
-  authMode === 'otp' && otpSent ? 'Verify OTP' :
-  'Sign In'
-)}
+                {isLoading ? 'Loading...' : (
+                  authMode === 'otp' && !otpSent ? 'Send OTP' :
+                  authMode === 'otp' && otpSent ? 'Verify OTP' :
+                  'Sign In'
+                )}
               </Button>
             </form>
-
             {/* Divider */}
             <Box sx={{ position: 'relative', mb: 3 }}>
-              <Box
-                sx={{
-                  height: 1,
-                  backgroundColor: 'divider',
-                }}
-              />
+              <Box sx={{ height: 1, backgroundColor: 'divider' }} />
               <Typography
                 variant="body2"
                 sx={{
@@ -280,12 +266,10 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                 or continue with
               </Typography>
             </Box>
-
             {/* Social Auth */}
             <Box sx={{ mb: 2 }}>
               <IntegrationAuthButtons onAuthSuccess={handleCivicAuthSuccess} />
             </Box>
-
             {/* Footer */}
             <Typography
               variant="body2"

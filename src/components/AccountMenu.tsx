@@ -125,58 +125,49 @@ export default function AccountMenu({ onSettingsClick, onLoginClick }: AccountMe
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {isAuthenticated && user ? (
-          <>
-            {/* User Info */}
-            <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+        {isAuthenticated && user ? [
+            // User Info
+            <Box key="user-info" sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                 {user.name}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                 {user.email}
               </Typography>
-            </Box>
-
-            <MenuItem onClick={handleClose}>
+            </Box>,
+            <MenuItem key="account" onClick={handleClose}>
               <ListItemIcon>
                 <Person fontSize="small" />
               </ListItemIcon>
               <ListItemText>Account</ListItemText>
-            </MenuItem>
-            
-            <MenuItem onClick={handleSettingsClick}>
+            </MenuItem>,
+            <MenuItem key="settings" onClick={handleSettingsClick}>
               <ListItemIcon>
                 <Settings fontSize="small" />
               </ListItemIcon>
               <ListItemText>Settings</ListItemText>
-            </MenuItem>
-            
-            <Divider />
-            
-            <MenuItem onClick={handleLogout}>
+            </MenuItem>,
+            <Divider key="divider" />,
+            <MenuItem key="logout" onClick={handleLogout}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
               <ListItemText>Logout</ListItemText>
             </MenuItem>
-          </>
-        ) : (
-          <>
-            <MenuItem onClick={handleSettingsClick}>
+          ] : [
+            <MenuItem key="settings" onClick={handleSettingsClick}>
               <ListItemIcon>
                 <Settings fontSize="small" />
               </ListItemIcon>
               <ListItemText>Settings</ListItemText>
-            </MenuItem>
-            
-            <MenuItem onClick={handleLoginClick}>
+            </MenuItem>,
+            <MenuItem key="login" onClick={handleLoginClick}>
               <ListItemIcon>
                 <Login fontSize="small" />
               </ListItemIcon>
               <ListItemText>Login</ListItemText>
             </MenuItem>
-          </>
-        )}
+          ]}
       </Menu>
     </>
   );
