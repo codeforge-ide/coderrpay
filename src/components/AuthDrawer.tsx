@@ -25,23 +25,18 @@ interface AuthDrawerProps {
 }
 
 export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerProps) {
-  const [activeTab, setActiveTab] = useState(0);
+  
   const [authMode, setAuthMode] = useState<'password' | 'otp'>('password');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
+  
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const { login, register, sendOtp, verifyOtp, registerWithOtp } = useAuth();
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-    setError('');
-    setOtpSent(false);
-    setOtp('');
-  };
+  
 
   const handleAuthModeChange = (mode: 'password' | 'otp') => {
     setAuthMode(mode);
@@ -76,18 +71,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
     
     try {
       if (authMode === 'password') {
-        if (activeTab === 0) {
-          // Sign In with password
-          await login(email, password);
-        } else {
-          // Sign Up with password
-          if (!/^[a-zA-Z0-9_-]{3,20}$/.test(username)) {
-  setError('Username must be 3-20 characters, only letters, numbers, underscores, and hyphens allowed.');
-  setIsLoading(false);
-  return;
-}
-await register(email, password, username);
-        }
+        await login(email, password);
         onAuthSuccess();
         onClose();
       } else {
@@ -98,18 +82,7 @@ await register(email, password, username);
           setOtpSent(true);
         } else {
           // Verify OTP
-          if (activeTab === 0) {
-            // Sign In with OTP
-            await verifyOtp(email, otp);
-          } else {
-            // Sign Up with OTP
-            if (!/^[a-zA-Z0-9_-]{3,20}$/.test(username)) {
-  setError('Username must be 3-20 characters, only letters, numbers, underscores, and hyphens allowed.');
-  setIsLoading(false);
-  return;
-}
-await registerWithOtp(email, username, otp);
-          }
+          await verifyOtp(email, otp);
           onAuthSuccess();
           onClose();
         }
@@ -182,15 +155,7 @@ await registerWithOtp(email, username, otp);
           </Box>
 
           {/* Tabs */}
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            centered
-            sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}
-          >
-            <Tab label="Sign In" />
-            <Tab label="Sign Up" />
-          </Tabs>
+          
 
           {/* Auth Mode Toggle */}
           <Box sx={{ px: 4, mb: 2 }}>
@@ -224,20 +189,7 @@ await registerWithOtp(email, username, otp);
             
             <form onSubmit={handleSubmit}>
               <Box sx={{ mb: 3 }}>
-                {activeTab === 1 && (
-                  <TextField
-                    fullWidth
-                    label="Username"
-                    value={username}
-                    onChange={(e) => {
-  const value = e.target.value.replace(/[^a-zA-Z0-9_-]/g, '');
-  setUsername(value);
-}}
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                    required
-                  />
-                )}
+                
                 <TextField
                   fullWidth
                   label="Email"
@@ -261,31 +213,30 @@ await registerWithOtp(email, username, otp);
                   />
                 ) : (
                   <>
+                    
                     {otpSent && (
-<TextField
-                    fullWidth
-                    label="Username"
-                    value={username}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^a-zA-Z0-9_-]/g, '');
-                      setUsername(value);
-                    }}
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                    required
-                    helperText="3-20 chars, letters, numbers, _ and - only"
-                  />
-                    )}
-                    {otpSent && (
-                      <Button
-                        variant="text"
-                        onClick={handleSendOtp}
-                        disabled={isLoading}
-                        sx={{ mt: 1 }}
-                      >
-                        Resend OTP
-                      </Button>
-                    )}
+  <TextField
+    fullWidth
+    label="Enter OTP"
+    value={otp}
+    onChange={(e) => setOtp(e.target.value)}
+    variant="outlined"
+    placeholder="6-digit code"
+    inputProps={{ maxLength: 6 }}
+    required
+    sx={{ mb: 2 }}
+  />
+)}
+{otpSent && (
+  <Button
+    variant="text"
+    onClick={handleSendOtp}
+    disabled={isLoading}
+    sx={{ mt: 1 }}
+  >
+    Resend OTP
+  </Button>
+)}
                   </>
                 )}
               </Box>
@@ -298,11 +249,11 @@ await registerWithOtp(email, username, otp);
                 sx={{ mb: 3, py: 1.5 }}
                 disabled={isLoading}
               >
-                {isLoading ? 'Loading...' : (
-                  authMode === 'otp' && !otpSent ? 'Send OTP' :
-                  authMode === 'otp' && otpSent ? 'Verify OTP' :
-                  activeTab === 0 ? 'Sign In' : 'Create Account'
-                )}
+{isLoading ? 'Loading...' : (
+  authMode === 'otp' && !otpSent ? 'Send OTP' :
+  authMode === 'otp' && otpSent ? 'Verify OTP' :
+  'Sign In'
+)}
               </Button>
             </form>
 
