@@ -215,7 +215,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                         onChange={(e) => setOtp(e.target.value)}
                         variant="outlined"
                         placeholder="6-digit code"
-                        inputProps={{ maxLength: 6 }}
+                        inputProps={{ maxLength: 6 }} // deprecated, but safe for now
                         required
                         sx={{ mb: 2 }}
                       />
