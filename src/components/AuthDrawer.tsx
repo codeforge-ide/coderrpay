@@ -11,10 +11,11 @@ import {
   Tabs,
   Tab,
   IconButton,
-  Backdrop,
 } from '@mui/material';
-import { Close, Google, GitHub } from '@mui/icons-material';
+import { Close, Google } from '@mui/icons-material';
 import Image from 'next/image';
+import { useAuth } from '../contexts/AuthContext';
+import { CivicAuthButtons, isCivicEnabled } from '../integrations/civic';
 
 interface AuthDrawerProps {
   open: boolean;
@@ -27,26 +28,44 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const { login } = useAuth();
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate authentication
-    setTimeout(() => {
-      onAuthSuccess();
-      onClose();
-    }, 1000);
+    // Simulate Appwrite authentication
+    const mockUser = {
+      id: Date.now().toString(),
+      name: name || 'Demo User',
+      email: email,
+      provider: 'appwrite' as const,
+    };
+    
+    login(mockUser);
+    onAuthSuccess();
+    onClose();
   };
 
   const handleSocialAuth = (provider: string) => {
-    // Simulate social authentication
-    setTimeout(() => {
-      onAuthSuccess();
-      onClose();
-    }, 1000);
+    // Simulate Appwrite social authentication
+    const mockUser = {
+      id: Date.now().toString(),
+      name: `${provider} User`,
+      email: `user@${provider}.com`,
+      provider: 'appwrite' as const,
+    };
+    
+    login(mockUser);
+    onAuthSuccess();
+    onClose();
+  };
+
+  const handleCivicAuthSuccess = () => {
+    onAuthSuccess();
+    onClose();
   };
 
   return (
@@ -55,21 +74,20 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 3,
-          minHeight: '500px',
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 3,
+            minHeight: '500px',
+          },
         },
-      }}
-      BackdropComponent={(props) => (
-        <Backdrop
-          {...props}
-          sx={{
+        backdrop: {
+          sx: {
             backdropFilter: 'blur(8px)',
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          }}
-        />
-      )}
+          },
+        },
+      }}
     >
       <DialogContent sx={{ p: 0 }}>
         <Box sx={{ position: 'relative' }}>
@@ -185,26 +203,23 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
             </Box>
 
             {/* Social Auth */}
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<Google />}
-                onClick={() => handleSocialAuth('google')}
-                sx={{ py: 1.5 }}
-              >
-                Google
-              </Button>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GitHub />}
-                onClick={() => handleSocialAuth('github')}
-                sx={{ py: 1.5 }}
-              >
-                GitHub
-              </Button>
-            </Box>
+            {isCivicEnabled() ? (
+              <Box sx={{ mb: 2 }}>
+                <CivicAuthButtons onAuthSuccess={handleCivicAuthSuccess} />
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<Google />}
+                  onClick={() => handleSocialAuth('google')}
+                  sx={{ py: 1.5 }}
+                >
+                  Google
+                </Button>
+              </Box>
+            )}
 
             {/* Footer */}
             <Typography
