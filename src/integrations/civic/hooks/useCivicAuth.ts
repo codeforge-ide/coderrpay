@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { CivicUser } from '../types';
 import { isCivicEnabled, getWeb3WalletUrl } from '../utils/config';
+import { account, OAuthProvider } from '../../../lib/appwrite';
 
 export const useCivicAuth = () => {
   const [user, setUser] = useState<CivicUser | null>(null);
@@ -10,29 +11,30 @@ export const useCivicAuth = () => {
   const [walletCreationInProgress, setWalletCreationInProgress] = useState(false);
 
   const signInWithGitHub = useCallback(async () => {
-    if (!isCivicEnabled()) {
-      console.log('Civic not enabled, falling back to Appwrite GitHub OAuth');
-      return;
-    }
-
     setIsLoading(true);
     try {
-      console.log('Civic GitHub sign in - implementation pending');
+      console.log('Starting GitHub OAuth via Appwrite');
+      // Use Appwrite OAuth for GitHub authentication
+      account.createOAuth2Session(
+        OAuthProvider.Github,
+        `${window.location.origin}`,
+        `${window.location.origin}/auth-failure`
+      );
+    } catch (error) {
+      console.error('GitHub auth error:', error);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   const signInWithWallet = useCallback(async () => {
-    if (!isCivicEnabled()) {
-      const walletUrl = getWeb3WalletUrl();
-      window.open(walletUrl, '_blank', 'width=400,height=600');
-      return;
-    }
-
     setIsLoading(true);
     try {
-      console.log('Civic Web3 wallet sign in - implementation pending');
+      console.log('Opening Web3 wallet fallback');
+      const walletUrl = getWeb3WalletUrl();
+      window.open(walletUrl, '_blank', 'width=400,height=600');
+    } catch (error) {
+      console.error('Wallet auth error:', error);
     } finally {
       setIsLoading(false);
     }

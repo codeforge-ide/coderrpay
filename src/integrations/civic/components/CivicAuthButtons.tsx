@@ -66,7 +66,7 @@ export const CivicAuthButtons: React.FC<CivicAuthButtonsProps> = ({
         disabled={isLoading}
         sx={{ py: 1.5 }}
       >
-        GitHub (Civic)
+        GitHub
       </Button>
       <Button
         fullWidth={fullWidth}
