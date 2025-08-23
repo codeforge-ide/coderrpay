@@ -16,7 +16,6 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Home,
-  Favorite,
   Code,
   MonetizationOn,
   AccountBalanceWallet,
@@ -25,7 +24,8 @@ import {
   EmojiEvents,
   Business,
   AccountTree,
-  Login
+  Login,
+  Message
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -34,6 +34,7 @@ const drawerWidth = 320;
 const navItems = [
   { text: 'Home', icon: Home, href: '/', requireAuth: false },
   { text: 'Discover', icon: Explore, href: '/discover', requireAuth: false },
+  { text: 'Messages', icon: Message, href: '/messages', requireAuth: true },
   { text: 'Hackathons', icon: Code, href: '/hackathons', requireAuth: true },
   { text: 'Grants', icon: MonetizationOn, href: '/grants', requireAuth: true },
   { text: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
