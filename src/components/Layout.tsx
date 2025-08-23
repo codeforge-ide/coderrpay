@@ -1,40 +1,41 @@
 'use client';
 
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import React from 'react';
 import DesktopSidebar from './DesktopSidebar';
 import MobileBottomNav from './MobileBottomNav';
-import AppThemeProvider from './AppThemeProvider';
-
-const drawerWidth = 240;
+import { ThemeProvider } from './ThemeProvider';
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
-  const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-
   return (
-    <Box sx={{ display: 'flex' }}>
-      {isDesktop && <DesktopSidebar />}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          // Add padding to the bottom on mobile to avoid overlap with bottom nav
-          pb: { xs: '80px', md: 3 },
+    <div className="flex min-h-screen">
+      <div className="hidden md:block">
+        <DesktopSidebar />
+      </div>
+      
+      <main 
+        className="flex-1 p-6 md:pl-0"
+        style={{ 
+          marginLeft: 'clamp(0px, 100vw - 100vw, 320px)',
+          paddingLeft: 'max(24px, calc((100vw - 320px - 960px) / 2))',
+          paddingBottom: '100px'
         }}
       >
-        {children}
-      </Box>
-      {!isDesktop && <MobileBottomNav />}
-    </Box>
+        <div className="md:ml-[320px]">
+          {children}
+        </div>
+      </main>
+      
+      <div className="md:hidden">
+        <MobileBottomNav />
+      </div>
+    </div>
   );
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <AppThemeProvider>
+    <ThemeProvider>
       <LayoutContent>{children}</LayoutContent>
-    </AppThemeProvider>
+    </ThemeProvider>
   );
 }

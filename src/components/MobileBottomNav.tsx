@@ -1,50 +1,66 @@
 'use client';
 
-import { Paper, BottomNavigation, BottomNavigationAction } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import PersonIcon from '@mui/icons-material/Person';
-import { usePathname } from 'next/navigation';
+import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { 
+  HomeIcon, 
+  ProjectsIcon, 
+  BountiesIcon, 
+  WalletIcon, 
+  SettingsIcon 
+} from './Icons';
 
 const navItems = [
-  { label: 'Home', icon: <HomeIcon />, href: '/' },
-  { label: 'Projects', icon: <AccountTreeIcon />, href: '/projects' },
-  { label: 'Bounties', icon: <MonetizationOnIcon />, href: '/bounties' },
-  { label: 'Wallet', icon: <AccountBalanceWalletIcon />, href: '/wallet' },
-  { label: 'Profile', icon: <PersonIcon />, href: '/profile' },
+  { label: 'Home', icon: HomeIcon, href: '/' },
+  { label: 'Projects', icon: ProjectsIcon, href: '/projects' },
+  { label: 'Bounties', icon: BountiesIcon, href: '/bounties' },
+  { label: 'Wallet', icon: WalletIcon, href: '/wallet' },
+  { label: 'Settings', icon: SettingsIcon, href: '/settings' },
 ];
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <Paper
-      sx={{
-        position: 'fixed',
-        bottom: 16,
-        left: 16,
-        right: 16,
-        borderRadius: '24px', // Rounded corners
-        boxShadow: 3,
-        overflow: 'hidden', // Ensures the BottomNavigation respects the border radius
-      }}
-      elevation={3}
+    <div
+      className="fixed bottom-4 left-4 right-4 rounded-3xl shadow-lg z-50"
+      style={{ backgroundColor: 'var(--card-bg)' }}
     >
-      <BottomNavigation showLabels value={pathname}>
-        {navItems.map((item) => (
-          <BottomNavigationAction
-            key={item.label}
-            label={item.label}
-            icon={item.icon}
-            value={item.href}
-            component={Link}
-            href={item.href}
-          />
-        ))}
-      </BottomNavigation>
-    </Paper>
+      <div className="flex items-center justify-around py-2">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          const IconComponent = item.icon;
+          
+          return (
+            <Link key={item.label} href={item.href} className="flex-1">
+              <div className="flex flex-col items-center py-2 px-1">
+                <div
+                  className={`p-2 rounded-xl transition-all ${
+                    isActive ? 'scale-110' : 'scale-100'
+                  }`}
+                  style={{
+                    backgroundColor: isActive ? 'var(--accent-color)' : 'transparent',
+                    color: isActive ? 'white' : 'var(--foreground)'
+                  }}
+                >
+                  <IconComponent className="w-5 h-5" />
+                </div>
+                <span 
+                  className={`text-xs mt-1 transition-colors ${
+                    isActive ? 'font-medium' : 'font-normal'
+                  }`}
+                  style={{ 
+                    color: isActive ? 'var(--accent-color)' : 'var(--foreground)'
+                  }}
+                >
+                  {item.label}
+                </span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
   );
 }
