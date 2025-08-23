@@ -12,9 +12,9 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   loginWithCivic: (civicUser: any) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
-  sendOtp: (email: string) => Promise<void>;
-  verifyOtp: (email: string, otp: string) => Promise<void>;
-  registerWithOtp: (email: string, otp: string) => Promise<void>;
+  sendOtp: (email: string) => Promise<{ userId: string; secret?: string }>;
+  verifyOtp: (userId: string, otp: string) => Promise<void>;
+  registerWithOtp: (userId: string, otp: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
   showAuthDrawer: boolean;
@@ -159,7 +159,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const sendOtp = async (email: string) => {
     setIsLoading(true);
     try {
-      await account.createEmailToken('unique()', email);
+      // createEmailToken is the correct method for OTP
+      const response = await account.createEmailToken('unique()', email);
+      return { userId: response.userId, secret: response.secret };
     } catch (error) {
       console.error('Send OTP error:', error);
       throw error;
@@ -168,23 +170,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const verifyOtp = async (email: string, otp: string) => {
+  const verifyOtp = async (userId: string, otp: string) => {
     setIsLoading(true);
     try {
       // Check if there's already an active session
       try {
         const existingUser = await account.get();
         if (existingUser) {
-          setUser(mapAppwriteUserToUser(existingUser));
+          const userData = mapAppwriteUserToUser(existingUser);
+          setUser(userData);
+          localStorage.setItem('user', JSON.stringify(userData));
           return;
         }
       } catch {
         // No existing session, proceed with OTP verification
       }
 
-      await account.createSession('unique()', otp);
+      // Use createSession with userId and OTP (secret)
+      await account.createSession(userId, otp);
       const currentUser = await account.get();
-      setUser(mapAppwriteUserToUser(currentUser));
+      const userData = mapAppwriteUserToUser(currentUser);
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error('Verify OTP error:', error);
       throw error;
@@ -193,11 +200,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const registerWithOtp = async (email: string, otp: string) => {
+  const registerWithOtp = async (userId: string, otp: string) => {
     setIsLoading(true);
     try {
-      await account.create('unique()', email, '', sanitizeUsernameFromEmail(email));
-      await verifyOtp(email, otp);
+      // For Email OTP, account creation is handled by the sendOtp flow
+      // We just need to verify the OTP with the userId
+      await verifyOtp(userId, otp);
     } catch (error) {
       console.error('Register with OTP error:', error);
       throw error;

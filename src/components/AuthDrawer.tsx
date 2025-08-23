@@ -28,15 +28,17 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
+  const [otpUserId, setOtpUserId] = useState(''); // Store userId from OTP response
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login, register, sendOtp, verifyOtp } = useAuth(); // register now only takes email, password
+  const { login, register, sendOtp, verifyOtp } = useAuth();
 
   const handleAuthModeChange = (mode: 'password' | 'otp') => {
     setAuthMode(mode);
     setError('');
     setOtpSent(false);
     setOtp('');
+    setOtpUserId(''); // Reset userId when changing modes
   };
 
   const handleSendOtp = async () => {
@@ -47,7 +49,8 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
     setIsLoading(true);
     setError('');
     try {
-      await sendOtp(email);
+      const response = await sendOtp(email);
+      setOtpUserId(response.userId); // Store the userId for verification
       setOtpSent(true);
     } catch (error: any) {
       setError(error.message || 'Failed to send OTP');
@@ -84,10 +87,11 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
       // OTP mode
       try {
         if (!otpSent) {
-          await sendOtp(email);
+          const response = await sendOtp(email);
+          setOtpUserId(response.userId); // Store the userId for verification
           setOtpSent(true);
         } else {
-          await verifyOtp(email, otp); // verifyOtp only needs email, otp
+          await verifyOtp(otpUserId, otp); // Use userId from OTP response
           onAuthSuccess();
           onClose();
         }
