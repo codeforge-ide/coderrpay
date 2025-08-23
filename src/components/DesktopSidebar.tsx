@@ -6,14 +6,12 @@ import {
   ListItem, 
   ListItemButton, 
   ListItemIcon, 
-  ListItemText, 
-  Typography,
+  ListItemText,
   Button,
   Box
 } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { 
   Home,
   Code,
@@ -67,34 +65,6 @@ export default function DesktopSidebar() {
       }}
     >
       <Box>
-        {/* Logo Section */}
-        <Box sx={{ 
-          display: 'flex', 
-          gap: 1.5, 
-          alignItems: 'center',
-          mb: 3,
-          mt: 1
-        }}>
-          <Image
-            src="/logo.jpg"
-            alt="CoderPay"
-            width={40}
-            height={40}
-            style={{ borderRadius: '8px' }}
-          />
-          <Typography 
-            variant="h6" 
-            component="h1" 
-            sx={{ 
-              fontWeight: 500,
-              fontSize: '1rem',
-              color: 'text.primary'
-            }}
-          >
-            CoderPay
-          </Typography>
-        </Box>
-
         {/* Navigation List */}
         <List sx={{ p: 0 }}>
           {navItems.map((item) => {

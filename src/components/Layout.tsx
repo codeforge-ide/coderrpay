@@ -29,6 +29,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     setShowAuthDrawer(false);
   };
 
+  const handleLoginClick = () => {
+    setShowAuthDrawer(true);
+  };
+
   return (
     <>
       {/* Top Bar - shown on all devices */}
@@ -36,9 +40,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         onMessagesClick={() => setMessagesOpen(true)}
         onWalletClick={() => setWalletOpen(true)}
         onSettingsClick={() => setSettingsOpen(true)}
+        onLoginClick={handleLoginClick}
       />
 
-      <Box sx={{ display: 'flex', minHeight: '100vh', pt: '64px' }}>
+      <Box sx={{ display: 'flex', minHeight: '100vh', pt: '80px' }}>
         {isDesktop && <DesktopSidebar />}
         <Box
           component="main"

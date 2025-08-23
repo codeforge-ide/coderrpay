@@ -16,7 +16,8 @@ import {
   AccountCircle, 
   Settings, 
   Person, 
-  Logout 
+  Logout,
+  Login
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -38,6 +39,11 @@ export default function AccountMenu({ onSettingsClick, onLoginClick }: AccountMe
     setAnchorEl(null);
   };
 
+  const handleLogout = async () => {
+    await logout();
+    handleClose();
+  };
+
   const handleLoginClick = () => {
     onLoginClick();
     handleClose();
@@ -57,10 +63,6 @@ export default function AccountMenu({ onSettingsClick, onLoginClick }: AccountMe
       .join('');
   };
 
-  if (!isAuthenticated || !user) {
-    return null;
-  }
-
   return (
     <>
       <IconButton
@@ -71,15 +73,19 @@ export default function AccountMenu({ onSettingsClick, onLoginClick }: AccountMe
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
       >
-        {user.avatar ? (
-          <Avatar 
-            src={user.avatar} 
-            sx={{ width: 32, height: 32 }}
-          />
+        {isAuthenticated && user ? (
+          user.avatar ? (
+            <Avatar 
+              src={user.avatar} 
+              sx={{ width: 32, height: 32 }}
+            />
+          ) : (
+            <Avatar sx={{ width: 32, height: 32, fontSize: '0.875rem' }}>
+              {getUserInitials(user.name)}
+            </Avatar>
+          )
         ) : (
-          <Avatar sx={{ width: 32, height: 32, fontSize: '0.875rem' }}>
-            {getUserInitials(user.name)}
-          </Avatar>
+          <AccountCircle sx={{ fontSize: 32 }} />
         )}
       </IconButton>
       <Menu
@@ -119,38 +125,58 @@ export default function AccountMenu({ onSettingsClick, onLoginClick }: AccountMe
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {/* User Info */}
-        <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            {user.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-            {user.email}
-          </Typography>
-        </Box>
+        {isAuthenticated && user ? (
+          <>
+            {/* User Info */}
+            <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {user.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                {user.email}
+              </Typography>
+            </Box>
 
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Person fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Account</ListItemText>
-        </MenuItem>
-        
-        <MenuItem onClick={handleSettingsClick}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Settings</ListItemText>
-        </MenuItem>
-        
-        <Divider />
-        
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Logout</ListItemText>
-        </MenuItem>
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <Person fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Account</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={handleSettingsClick}>
+              <ListItemIcon>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Settings</ListItemText>
+            </MenuItem>
+            
+            <Divider />
+            
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Logout</ListItemText>
+            </MenuItem>
+          </>
+        ) : (
+          <>
+            <MenuItem onClick={handleSettingsClick}>
+              <ListItemIcon>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Settings</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={handleLoginClick}>
+              <ListItemIcon>
+                <Login fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Login</ListItemText>
+            </MenuItem>
+          </>
+        )}
       </Menu>
     </>
   );
