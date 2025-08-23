@@ -1,12 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { syncCivicUserToAppwrite, createCustomJWTForCivicUser } from '../integrations/appwrite/civic-auth';
 
 interface User {
   id: string;
   name: string;
   email: string;
   avatar?: string;
+  provider?: 'appwrite' | 'civic';
+  ethereum_address?: string;
 }
 
 interface AuthContextType {
@@ -14,6 +17,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (user: User) => void;
+  loginWithCivic: (civicUser: any) => Promise<void>;
   logout: () => void;
   showAuthDrawer: boolean;
   setShowAuthDrawer: (show: boolean) => void;
@@ -48,8 +52,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    const userWithProvider = {
+      ...userData,
+      provider: userData.provider || 'appwrite' as const,
+    };
+    setUser(userWithProvider);
+    localStorage.setItem('user', JSON.stringify(userWithProvider));
+  };
+
+  const loginWithCivic = async (civicUser: any) => {
+    setIsLoading(true);
+    try {
+      // Sync Civic user to Appwrite
+      await syncCivicUserToAppwrite(civicUser);
+      
+      // Create custom JWT for authentication
+      await createCustomJWTForCivicUser(civicUser);
+      
+      // Create unified user object
+      const unifiedUser: User = {
+        id: civicUser.id,
+        name: civicUser.name,
+        email: civicUser.email,
+        avatar: civicUser.avatar,
+        provider: 'civic',
+        ethereum_address: civicUser.ethereum?.address,
+      };
+      
+      login(unifiedUser);
+    } catch (error) {
+      console.error('Error logging in with Civic:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
@@ -65,6 +101,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isAuthenticated,
       isLoading,
       login,
+      loginWithCivic,
       logout,
       showAuthDrawer,
       setShowAuthDrawer,
