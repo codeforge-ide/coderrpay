@@ -18,16 +18,17 @@ import {
   Home,
   AccountTree,
   EmojiEvents,
-  Explore,
+  RssFeed,
   MoreHoriz,
   Code,
   MonetizationOn,
-  Business
+  Business,
+  Explore
 } from '@mui/icons-material';
 
 const navItems = [
   { label: 'Home', icon: Home, href: '/' },
-  { label: 'Discover', icon: Explore, href: '/discover' },
+  { label: 'Feed', icon: RssFeed, href: '/feed' },
   { label: 'Projects', icon: AccountTree, href: '/projects' },
   { label: 'Bounties', icon: EmojiEvents, href: '/bounties' },
 ];
