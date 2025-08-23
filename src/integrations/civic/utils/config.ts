@@ -1,5 +1,6 @@
 export const isCivicEnabled = () => {
-  return process.env.NEXT_PUBLIC_INTEGRATION_CIVIC === 'true';
+  // Always enable Civic since we have it configured in next.config.ts
+  return true;
 };
 
 export const getCivicClientId = () => {
