@@ -24,26 +24,36 @@ import {
   Explore,
   EmojiEvents,
   Business,
-  AccountTree
+  AccountTree,
+  Login
 } from '@mui/icons-material';
+import { useAuth } from '@/contexts/AuthContext';
 
 const drawerWidth = 320;
 
 const navItems = [
-  { text: 'Home', icon: Home, href: '/' },
-  { text: 'Sponsorships', icon: Favorite, href: '/sponsorships' },
-  { text: 'Hackathons', icon: Code, href: '/hackathons' },
-  { text: 'Grants', icon: MonetizationOn, href: '/grants' },
-  { text: 'Wallet', icon: AccountBalanceWallet, href: '/wallet' },
-  { text: 'Discover', icon: Explore, href: '/discover' },
-  { text: 'Bounties', icon: EmojiEvents, href: '/bounties' },
-  { text: 'Organizations', icon: Business, href: '/organizations' },
-  { text: 'Projects', icon: AccountTree, href: '/projects' },
-  { text: 'Settings', icon: Settings, href: '/settings' },
+  { text: 'Home', icon: Home, href: '/', requireAuth: false },
+  { text: 'Discover', icon: Explore, href: '/discover', requireAuth: false },
+  { text: 'Sponsorships', icon: Favorite, href: '/sponsorships', requireAuth: true },
+  { text: 'Hackathons', icon: Code, href: '/hackathons', requireAuth: true },
+  { text: 'Grants', icon: MonetizationOn, href: '/grants', requireAuth: true },
+  { text: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
+  { text: 'Projects', icon: AccountTree, href: '/projects', requireAuth: true },
+  { text: 'Organizations', icon: Business, href: '/organizations', requireAuth: true },
+  { text: 'Wallet', icon: AccountBalanceWallet, href: '/wallet', requireAuth: true },
+  { text: 'Settings', icon: Settings, href: '/settings', requireAuth: true },
 ];
 
 export default function DesktopSidebar() {
   const pathname = usePathname();
+  const { isAuthenticated, setShowAuthDrawer } = useAuth();
+
+  const handleProtectedNavigation = (item: typeof navItems[0]) => {
+    if (item.requireAuth && !isAuthenticated) {
+      setShowAuthDrawer(true);
+      return;
+    }
+  };
 
   return (
     <Drawer
@@ -93,17 +103,22 @@ export default function DesktopSidebar() {
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const IconComponent = item.icon;
+            const isDisabled = item.requireAuth && !isAuthenticated;
             
             return (
               <ListItem key={item.text} disablePadding sx={{ mb: 0.25 }}>
                 <ListItemButton
-                  component={Link}
-                  href={item.href}
+                  component={item.requireAuth && !isAuthenticated ? 'div' : Link}
+                  href={item.requireAuth && !isAuthenticated ? undefined : item.href}
                   selected={isActive}
+                  onClick={() => handleProtectedNavigation(item)}
+                  disabled={isDisabled}
                   sx={{
                     borderRadius: 2,
                     px: 1.5,
                     py: 1,
+                    opacity: isDisabled ? 0.5 : 1,
+                    cursor: isDisabled ? 'pointer' : 'default',
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
@@ -125,20 +140,38 @@ export default function DesktopSidebar() {
         </List>
       </Box>
 
-      {/* New Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{
-          py: 1.5,
-          fontWeight: 700,
-          fontSize: '0.875rem',
-          letterSpacing: '0.015em',
-        }}
-      >
-        New
-      </Button>
+      {/* Action Button */}
+      {isAuthenticated ? (
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{
+            py: 1.5,
+            fontWeight: 700,
+            fontSize: '0.875rem',
+            letterSpacing: '0.015em',
+          }}
+        >
+          New
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          startIcon={<Login />}
+          onClick={() => setShowAuthDrawer(true)}
+          sx={{
+            py: 1.5,
+            fontWeight: 700,
+            fontSize: '0.875rem',
+            letterSpacing: '0.015em',
+          }}
+        >
+          Sign In
+        </Button>
+      )}
     </Drawer>
   );
 }
