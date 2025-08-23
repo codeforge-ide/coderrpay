@@ -23,6 +23,7 @@ import {
   Login
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
+import { getPageAction } from '@/utils/pageActions';
 
 const drawerWidth = 320;
 
@@ -39,11 +40,46 @@ const navItems = [
 export default function DesktopSidebar() {
   const pathname = usePathname();
   const { isAuthenticated, setShowAuthDrawer } = useAuth();
+  const pageAction = getPageAction(pathname);
 
   const handleProtectedNavigation = (item: typeof navItems[0]) => {
     if (item.requireAuth && !isAuthenticated) {
       setShowAuthDrawer(true);
       return;
+    }
+  };
+
+  const handleActionClick = () => {
+    if (!pageAction) return;
+    
+    // Handle different action types
+    switch (pageAction.action) {
+      case 'create-post':
+        console.log('Open create post modal');
+        break;
+      case 'create-project':
+        console.log('Open create project modal');
+        break;
+      case 'join-hackathon':
+        console.log('Open join hackathon modal');
+        break;
+      case 'apply-grant':
+        console.log('Open grant application modal');
+        break;
+      case 'create-bounty':
+        console.log('Open create bounty modal');
+        break;
+      case 'create-organization':
+        console.log('Open create organization modal');
+        break;
+      case 'compose-message':
+        console.log('Open compose message modal');
+        break;
+      case 'add-skill':
+        console.log('Open add skill modal');
+        break;
+      default:
+        console.log('Unknown action:', pageAction.action);
     }
   };
 
@@ -106,12 +142,14 @@ export default function DesktopSidebar() {
         </List>
       </Box>
 
-      {/* Action Button */}
-      {isAuthenticated ? (
+      {/* Dynamic Action Button */}
+      {isAuthenticated && pageAction ? (
         <Button
           variant="contained"
           color="primary"
           fullWidth
+          startIcon={<pageAction.icon />}
+          onClick={handleActionClick}
           sx={{
             py: 1.5,
             fontWeight: 700,
@@ -119,9 +157,9 @@ export default function DesktopSidebar() {
             letterSpacing: '0.015em',
           }}
         >
-          New
+          {pageAction.label}
         </Button>
-      ) : (
+      ) : !isAuthenticated ? (
         <Button
           variant="contained"
           color="primary"
@@ -137,7 +175,7 @@ export default function DesktopSidebar() {
         >
           Sign In
         </Button>
-      )}
+      ) : null}
     </Drawer>
   );
 }

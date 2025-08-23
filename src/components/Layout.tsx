@@ -11,6 +11,7 @@ import WalletDrawerContent from './WalletDrawerContent';
 import SettingsDrawerContent from './SettingsDrawerContent';
 import AppThemeProvider from './AppThemeProvider';
 import AuthDrawer from './AuthDrawer';
+import MobileActionFab from './MobileActionFab';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 
 const drawerWidth = 320;
@@ -91,6 +92,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         onClose={() => setShowAuthDrawer(false)}
         onAuthSuccess={handleAuthSuccess}
       />
+
+      {/* Mobile FAB */}
+      <MobileActionFab />
     </>
   );
 }
