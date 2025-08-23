@@ -100,22 +100,21 @@ export default function DesktopSidebar() {
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const IconComponent = item.icon;
-            const isDisabled = item.requireAuth && !isAuthenticated;
+            const needsAuth = item.requireAuth && !isAuthenticated;
             
             return (
               <ListItem key={item.text} disablePadding sx={{ mb: 0.25 }}>
                 <ListItemButton
-                  component={item.requireAuth && !isAuthenticated ? 'div' : Link}
-                  href={item.requireAuth && !isAuthenticated ? undefined : item.href}
+                  component={needsAuth ? 'div' : Link}
+                  href={needsAuth ? undefined : item.href}
                   selected={isActive}
                   onClick={() => handleProtectedNavigation(item)}
-                  disabled={isDisabled}
                   sx={{
                     borderRadius: 2,
                     px: 1.5,
                     py: 1,
-                    opacity: isDisabled ? 0.5 : 1,
-                    cursor: isDisabled ? 'pointer' : 'default',
+                    opacity: needsAuth ? 0.7 : 1,
+                    cursor: 'pointer',
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>

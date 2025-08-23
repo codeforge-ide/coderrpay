@@ -22,26 +22,27 @@ import {
   MoreHoriz,
   Code,
   MonetizationOn,
-  Business,
-  Explore
+  Business
 } from '@mui/icons-material';
+import { useAuth } from '@/contexts/AuthContext';
 
 const navItems = [
-  { label: 'Home', icon: Home, href: '/' },
-  { label: 'Feed', icon: RssFeed, href: '/feed' },
-  { label: 'Projects', icon: AccountTree, href: '/projects' },
-  { label: 'Bounties', icon: EmojiEvents, href: '/bounties' },
+  { label: 'Home', icon: Home, href: '/', requireAuth: false },
+  { label: 'Feed', icon: RssFeed, href: '/feed', requireAuth: false },
+  { label: 'Projects', icon: AccountTree, href: '/projects', requireAuth: true },
+  { label: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
 ];
 
 const moreItems = [
-  { label: 'Hackathons', icon: Code, href: '/hackathons' },
-  { label: 'Grants', icon: MonetizationOn, href: '/grants' },
-  { label: 'Organizations', icon: Business, href: '/organizations' },
+  { label: 'Hackathons', icon: Code, href: '/hackathons', requireAuth: true },
+  { label: 'Grants', icon: MonetizationOn, href: '/grants', requireAuth: true },
+  { label: 'Organizations', icon: Business, href: '/organizations', requireAuth: true },
 ];
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const theme = useTheme();
+  const { isAuthenticated, setShowAuthDrawer } = useAuth();
   const [moreAnchorEl, setMoreAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -50,6 +51,13 @@ export default function MobileBottomNav() {
 
   const handleMoreClose = () => {
     setMoreAnchorEl(null);
+  };
+
+  const handleProtectedNavigation = (item: typeof navItems[0], event: React.MouseEvent) => {
+    if (item.requireAuth && !isAuthenticated) {
+      event.preventDefault();
+      setShowAuthDrawer(true);
+    }
   };
 
   return (
@@ -87,20 +95,26 @@ export default function MobileBottomNav() {
               },
             }}
           >
-            {navItems.map((item) => (
-              <BottomNavigationAction
-                key={item.label}
-                label={item.label}
-                icon={<item.icon />}
-                value={item.href}
-                component={Link}
-                href={item.href}
-                sx={{
-                  minWidth: 'auto',
-                  px: 1,
-                }}
-              />
-            ))}
+            {navItems.map((item) => {
+              const needsAuth = item.requireAuth && !isAuthenticated;
+              return (
+                <BottomNavigationAction
+                  key={item.label}
+                  label={item.label}
+                  icon={<item.icon />}
+                  value={item.href}
+                  component={needsAuth ? 'div' : Link}
+                  href={needsAuth ? undefined : item.href}
+                  onClick={(event: React.MouseEvent) => handleProtectedNavigation(item, event)}
+                  sx={{
+                    minWidth: 'auto',
+                    px: 1,
+                    opacity: needsAuth ? 0.7 : 1,
+                    cursor: 'pointer',
+                  }}
+                />
+              );
+            })}
             
             <BottomNavigationAction
               label="More"
@@ -135,20 +149,34 @@ export default function MobileBottomNav() {
           }
         }}
       >
-        {moreItems.map((item) => (
-          <MenuItem
-            key={item.label}
-            component={Link}
-            href={item.href}
-            onClick={handleMoreClose}
-            sx={{ py: 1.5, px: 2 }}
-          >
-            <ListItemIcon sx={{ minWidth: 36 }}>
-              <item.icon sx={{ fontSize: 20 }} />
-            </ListItemIcon>
-            <ListItemText primary={item.label} />
-          </MenuItem>
-        ))}
+        {moreItems.map((item) => {
+          const needsAuth = item.requireAuth && !isAuthenticated;
+          return (
+            <MenuItem
+              key={item.label}
+              component={needsAuth ? 'div' : Link}
+              href={needsAuth ? undefined : item.href}
+              onClick={(event: React.MouseEvent) => {
+                if (needsAuth) {
+                  event.preventDefault();
+                  setShowAuthDrawer(true);
+                }
+                handleMoreClose();
+              }}
+              sx={{ 
+                py: 1.5, 
+                px: 2,
+                opacity: needsAuth ? 0.7 : 1,
+                cursor: 'pointer',
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <item.icon sx={{ fontSize: 20 }} />
+              </ListItemIcon>
+              <ListItemText primary={item.label} />
+            </MenuItem>
+          );
+        })}
       </Menu>
     </>
   );
