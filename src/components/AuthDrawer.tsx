@@ -11,10 +11,10 @@ import {
   Tabs,
   Tab,
   IconButton,
-  Avatar,
   Backdrop,
 } from '@mui/material';
 import { Close, Google, GitHub } from '@mui/icons-material';
+import Image from 'next/image';
 
 interface AuthDrawerProps {
   open: boolean;
@@ -88,10 +88,15 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
 
           {/* Header */}
           <Box sx={{ p: 4, pb: 2, textAlign: 'center' }}>
-            <Avatar
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0gOqBL0VzSyvjURKBux-Z9KkXt1cxaCUddSWnXZkm9I8Fast_eJiF4uoFnkef4NMYzF1c734QWhUliRKVeGEc_9kz-n_ZQMFStyQUSSX8gReph3vZLL43L_OtYUtI8-wMrJjawoCZ_0aRunRCYSjUWNVcVgs9KJ3mPinKECMlckwTxJY2DVAfQtPO5sAVeOYWfM4b81xjyNqq1ygYFJDB5hPpI-6ZXLfaNiAnTP0vo7HMW4FGWPqRRvCyaplVAKt7jBk7hmFvIr8"
-              sx={{ width: 64, height: 64, mx: 'auto', mb: 2 }}
-            />
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <Image
+                src="/logo.jpg"
+                alt="CoderPay"
+                width={64}
+                height={64}
+                style={{ borderRadius: '16px' }}
+              />
+            </Box>
             <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
               Welcome to CoderPay
             </Typography>

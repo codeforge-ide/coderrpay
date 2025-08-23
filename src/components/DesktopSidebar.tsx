@@ -7,13 +7,13 @@ import {
   ListItemButton, 
   ListItemIcon, 
   ListItemText, 
-  Avatar,
   Typography,
   Button,
   Box
 } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Home,
   Code,
@@ -75,9 +75,12 @@ export default function DesktopSidebar() {
           mb: 3,
           mt: 1
         }}>
-          <Avatar 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0gOqBL0VzSyvjURKBux-Z9KkXt1cxaCUddSWnXZkm9I8Fast_eJiF4uoFnkef4NMYzF1c734QWhUliRKVeGEc_9kz-n_ZQMFStyQUSSX8gReph3vZLL43L_OtYUtI8-wMrJjawoCZ_0aRunRCYSjUWNVcVgs9KJ3mPinKECMlckwTxJY2DVAfQtPO5sAVeOYWfM4b81xjyNqq1ygYFJDB5hPpI-6ZXLfaNiAnTP0vo7HMW4FGWPqRRvCyaplVAKt7jBk7hmFvIr8"
-            sx={{ width: 40, height: 40 }}
+          <Image
+            src="/logo.jpg"
+            alt="CoderPay"
+            width={40}
+            height={40}
+            style={{ borderRadius: '8px' }}
           />
           <Typography 
             variant="h6" 
