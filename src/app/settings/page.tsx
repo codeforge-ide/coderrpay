@@ -197,7 +197,7 @@ const SettingsPage: React.FC = () => {
                   </ListItemAvatar>
                   <ListItemText
                     primary="Email Notifications"
-                    secondary="Receive updates about sponsorships and hackathons"
+                    secondary="Receive updates about hackathons and grants"
                   />
                   <ListItemSecondaryAction>
                     <Switch defaultChecked color="primary" />

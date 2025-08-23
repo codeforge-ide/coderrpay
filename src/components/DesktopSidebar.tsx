@@ -34,7 +34,6 @@ const drawerWidth = 320;
 const navItems = [
   { text: 'Home', icon: Home, href: '/', requireAuth: false },
   { text: 'Discover', icon: Explore, href: '/discover', requireAuth: false },
-  { text: 'Sponsorships', icon: Favorite, href: '/sponsorships', requireAuth: true },
   { text: 'Hackathons', icon: Code, href: '/hackathons', requireAuth: true },
   { text: 'Grants', icon: MonetizationOn, href: '/grants', requireAuth: true },
   { text: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
