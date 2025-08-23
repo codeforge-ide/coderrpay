@@ -20,10 +20,10 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithCivic: (civicUser: any) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<void>;
   sendOtp: (email: string) => Promise<void>;
   verifyOtp: (email: string, otp: string) => Promise<void>;
-  registerWithOtp: (email: string, username: string, otp: string) => Promise<void>;
+  registerWithOtp: (email: string, otp: string) => Promise<void>;
   logout: () => Promise<void>;
   showAuthDrawer: boolean;
   setShowAuthDrawer: (show: boolean) => void;
@@ -87,10 +87,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (email: string, password: string) => { // name param removed, now uses email as name
+
     setIsLoading(true);
     try {
-      await account.create('unique()', email, password, name);
+      await account.create('unique()', email, password, email);
       await login(email, password);
     } catch (error) {
       console.error('Registration error:', error);
@@ -152,12 +153,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const registerWithOtp = async (email: string, username: string, otp: string) => {
+  const registerWithOtp = async (email: string, otp: string) => { // username param removed, now uses email as name
+
     setIsLoading(true);
     try {
       // For registration with OTP, we first create the user account
       // Then verify with the OTP to create a session
-      await account.create('unique()', email, '', username);
+      await account.create('unique()', email, '', email);
       await verifyOtp(email, otp);
     } catch (error) {
       console.error('Register with OTP error:', error);

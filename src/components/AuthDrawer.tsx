@@ -30,7 +30,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
   const [otpSent, setOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login, register, sendOtp, verifyOtp } = useAuth();
+  const { login, register, sendOtp, verifyOtp } = useAuth(); // register now only takes email, password
 
   const handleAuthModeChange = (mode: 'password' | 'otp') => {
     setAuthMode(mode);
@@ -62,13 +62,13 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
     setError('');
     if (authMode === 'password') {
       try {
-        await register(email, password, '');
+        await register(email, password);
         onAuthSuccess();
         onClose();
       } catch (regError: any) {
         if (regError?.code === 409 || (regError?.message && regError.message.toLowerCase().includes('already exists'))) {
           try {
-            await login(email, password);
+            await login(email, password); // login only needs email, password
             onAuthSuccess();
             onClose();
           } catch (loginError: any) {
