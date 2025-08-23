@@ -75,15 +75,35 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
     setError('');
     
     try {
-      if (activeTab === 0) {
-        // Sign In
-        await login(email, password);
+      if (authMode === 'password') {
+        if (activeTab === 0) {
+          // Sign In with password
+          await login(email, password);
+        } else {
+          // Sign Up with password
+          await register(email, password, username);
+        }
+        onAuthSuccess();
+        onClose();
       } else {
-        // Sign Up
-        await register(email, password, name);
+        // OTP mode
+        if (!otpSent) {
+          // Send OTP first
+          await sendOtp(email);
+          setOtpSent(true);
+        } else {
+          // Verify OTP
+          if (activeTab === 0) {
+            // Sign In with OTP
+            await verifyOtp(email, otp);
+          } else {
+            // Sign Up with OTP
+            await registerWithOtp(email, username, otp);
+          }
+          onAuthSuccess();
+          onClose();
+        }
       }
-      onAuthSuccess();
-      onClose();
     } catch (error: any) {
       setError(error.message || 'Authentication failed');
     } finally {
@@ -162,6 +182,28 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
             <Tab label="Sign Up" />
           </Tabs>
 
+          {/* Auth Mode Toggle */}
+          <Box sx={{ px: 4, mb: 2 }}>
+            <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+              <Button
+                variant={authMode === 'password' ? 'contained' : 'outlined'}
+                onClick={() => handleAuthModeChange('password')}
+                size="small"
+                sx={{ flex: 1 }}
+              >
+                Password
+              </Button>
+              <Button
+                variant={authMode === 'otp' ? 'contained' : 'outlined'}
+                onClick={() => handleAuthModeChange('otp')}
+                size="small"
+                sx={{ flex: 1 }}
+              >
+                Email OTP
+              </Button>
+            </Box>
+          </Box>
+
           {/* Auth Form */}
           <Box sx={{ px: 4, pb: 4 }}>
             {error && (
@@ -175,9 +217,9 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                 {activeTab === 1 && (
                   <TextField
                     fullWidth
-                    label="Full Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    label="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     variant="outlined"
                     sx={{ mb: 2 }}
                     required
@@ -193,15 +235,43 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                   sx={{ mb: 2 }}
                   required
                 />
-                <TextField
-                  fullWidth
-                  label="Password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  variant="outlined"
-                  required
-                />
+                
+                {authMode === 'password' ? (
+                  <TextField
+                    fullWidth
+                    label="Password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    variant="outlined"
+                    required
+                  />
+                ) : (
+                  <>
+                    {otpSent && (
+                      <TextField
+                        fullWidth
+                        label="Enter OTP"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        variant="outlined"
+                        placeholder="6-digit code"
+                        inputProps={{ maxLength: 6 }}
+                        required
+                      />
+                    )}
+                    {otpSent && (
+                      <Button
+                        variant="text"
+                        onClick={handleSendOtp}
+                        disabled={isLoading}
+                        sx={{ mt: 1 }}
+                      >
+                        Resend OTP
+                      </Button>
+                    )}
+                  </>
+                )}
               </Box>
 
               <Button
@@ -212,7 +282,11 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                 sx={{ mb: 3, py: 1.5 }}
                 disabled={isLoading}
               >
-                {isLoading ? 'Loading...' : (activeTab === 0 ? 'Sign In' : 'Create Account')}
+                {isLoading ? 'Loading...' : (
+                  authMode === 'otp' && !otpSent ? 'Send OTP' :
+                  authMode === 'otp' && otpSent ? 'Verify OTP' :
+                  activeTab === 0 ? 'Sign In' : 'Create Account'
+                )}
               </Button>
             </form>
 
