@@ -49,20 +49,6 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
     onClose();
   };
 
-  const handleSocialAuth = (provider: string) => {
-    // Simulate Appwrite social authentication
-    const mockUser = {
-      id: Date.now().toString(),
-      name: `${provider} User`,
-      email: `user@${provider}.com`,
-      provider: 'appwrite' as const,
-    };
-    
-    login(mockUser);
-    onAuthSuccess();
-    onClose();
-  };
-
   const handleCivicAuthSuccess = () => {
     onAuthSuccess();
     onClose();
