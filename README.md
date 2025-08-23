@@ -9,3 +9,13 @@
 - Collaborate and get paid
 
 Simple. Community-first. Make something awesome. ❤️
+
+---
+
+## Integrations
+
+CoderrPay supports flexible authentication and collaboration integrations.
+
+### Civic Integration
+
+For information about using Civic (GitHub + Web3 wallet) authentication, see the [CIVIC_INTEGRATION.md](./CIVIC_INTEGRATION.md) file.
