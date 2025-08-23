@@ -1,6 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { account } from '../lib/appwrite';
+import { Models } from 'appwrite';
 import { syncCivicUserToAppwrite, createCustomJWTForCivicUser } from '../integrations/appwrite/civic-auth';
 
 interface User {
@@ -16,9 +18,10 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (user: User) => void;
+  login: (email: string, password: string) => Promise<void>;
   loginWithCivic: (civicUser: any) => Promise<void>;
-  logout: () => void;
+  register: (email: string, password: string, name: string) => Promise<void>;
+  logout: () => Promise<void>;
   showAuthDrawer: boolean;
   setShowAuthDrawer: (show: boolean) => void;
 }
@@ -43,21 +46,55 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [showAuthDrawer, setShowAuthDrawer] = useState(false);
 
   useEffect(() => {
-    // Check for existing auth state
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setIsLoading(false);
+    checkAuthState();
   }, []);
 
-  const login = (userData: User) => {
-    const userWithProvider = {
-      ...userData,
-      provider: userData.provider || 'appwrite' as const,
-    };
-    setUser(userWithProvider);
-    localStorage.setItem('user', JSON.stringify(userWithProvider));
+  const checkAuthState = async () => {
+    try {
+      const currentUser = await account.get();
+      setUser(mapAppwriteUserToUser(currentUser));
+    } catch (error) {
+      // User is not authenticated
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const mapAppwriteUserToUser = (appwriteUser: Models.User<Models.Preferences>): User => ({
+    id: appwriteUser.$id,
+    name: appwriteUser.name,
+    email: appwriteUser.email,
+    avatar: (appwriteUser.prefs as any)?.avatar,
+    provider: 'appwrite',
+    ethereum_address: (appwriteUser.prefs as any)?.ethereum_address,
+  });
+
+  const login = async (email: string, password: string) => {
+    setIsLoading(true);
+    try {
+      await account.createEmailPasswordSession(email, password);
+      const currentUser = await account.get();
+      setUser(mapAppwriteUserToUser(currentUser));
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const register = async (email: string, password: string, name: string) => {
+    setIsLoading(true);
+    try {
+      await account.create('unique()', email, password, name);
+      await login(email, password);
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const loginWithCivic = async (civicUser: any) => {
@@ -69,17 +106,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Create custom JWT for authentication
       await createCustomJWTForCivicUser(civicUser);
       
-      // Create unified user object
-      const unifiedUser: User = {
-        id: civicUser.id,
-        name: civicUser.name,
-        email: civicUser.email,
-        avatar: civicUser.avatar,
+      // Get the updated user from Appwrite
+      const currentUser = await account.get();
+      setUser({
+        ...mapAppwriteUserToUser(currentUser),
         provider: 'civic',
         ethereum_address: civicUser.ethereum?.address,
-      };
-      
-      login(unifiedUser);
+      });
     } catch (error) {
       console.error('Error logging in with Civic:', error);
       throw error;
@@ -88,9 +121,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+  const logout = async () => {
+    try {
+      await account.deleteSession('current');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+    }
   };
 
   const isAuthenticated = !!user;
@@ -102,6 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isLoading,
       login,
       loginWithCivic,
+      register,
       logout,
       showAuthDrawer,
       setShowAuthDrawer,
