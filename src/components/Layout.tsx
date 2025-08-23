@@ -105,7 +105,7 @@ import { CivicAuthProvider as LocalCivicAuthProvider } from '@/integrations/civi
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AppThemeProvider>
-      <CivicAuthProvider>
+      <CivicAuthProvider displayMode="iframe">
         <AuthProvider>
           <LocalCivicAuthProvider>
             <LayoutContent>{children}</LayoutContent>

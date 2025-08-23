@@ -24,8 +24,7 @@ export const CivicAuthButtons: React.FC<CivicAuthButtonsProps> = ({
     try {
       // Close the auth modal first so Civic's overlay appears on top
       onClose?.();
-      // Use iframe display mode to avoid popup/redirect conflicts
-      await signIn("iframe");
+      await signIn();
       onAuthSuccess?.();
     } catch (error) {
       console.error('Civic auth error:', error);
