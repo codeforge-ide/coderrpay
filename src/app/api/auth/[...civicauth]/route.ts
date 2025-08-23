@@ -1,5 +1,3 @@
-// Civic handler removed due to missing nextjs export in @civic/auth-web3
+import { handler } from "@civic/auth/nextjs";
 
-export const GET = () => {
-  return new Response('Civic auth route is not available.');
-};
+export const GET = handler();

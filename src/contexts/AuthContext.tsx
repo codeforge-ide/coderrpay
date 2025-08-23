@@ -56,6 +56,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   // Dummy functions to avoid ReferenceError (since you requested syntax only)
+  const mapAppwriteUserToUser = (user: any) => user;
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
@@ -84,9 +86,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false);
     }
   };
-  const syncCivicUserToAppwrite = async (civicUser: any) => {};
-  const createCustomJWTForCivicUser = async (civicUser: any) => {};
-  const mapAppwriteUserToUser = (user: any) => user;
 
   const register = async (email: string, password: string) => {
     setIsLoading(true);
@@ -129,25 +128,46 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const existingUser = await account.get();
         if (existingUser) {
-          setUser({
+          const userData = {
             ...mapAppwriteUserToUser(existingUser),
             provider: 'civic',
-            ethereum_address: civicUser.ethereum?.address,
-          });
+            ethereum_address: civicUser.walletAddress,
+          };
+          setUser(userData);
+          localStorage.setItem('user', JSON.stringify(userData));
           return;
         }
       } catch {
         // No existing session, proceed with Civic login
       }
 
-      await syncCivicUserToAppwrite(civicUser);
-      await createCustomJWTForCivicUser(civicUser);
+      // Generate custom token for Civic user
+      const response = await fetch('/api/auth/civic-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ civicUser }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate custom token');
+      }
+
+      const { userId, secret } = await response.json();
+
+      // Create session with custom token
+      await account.createSession(userId, secret);
+      
+      // Get the authenticated user
       const currentUser = await account.get();
-      setUser({
+      const userData = {
         ...mapAppwriteUserToUser(currentUser),
         provider: 'civic',
-        ethereum_address: civicUser.ethereum?.address,
-      });
+        ethereum_address: civicUser.walletAddress,
+      };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error('Error logging in with Civic:', error);
       throw error;

@@ -99,12 +99,19 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { CivicAuthProvider as OfficialCivicAuthProvider } from '@civic/auth/nextjs';
+import { CivicAuthProvider } from '@/integrations/civic/providers/CivicAuthProvider';
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AppThemeProvider>
-      <AuthProvider>
-        <LayoutContent>{children}</LayoutContent>
-      </AuthProvider>
+      <OfficialCivicAuthProvider>
+        <AuthProvider>
+          <CivicAuthProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </CivicAuthProvider>
+        </AuthProvider>
+      </OfficialCivicAuthProvider>
     </AppThemeProvider>
   );
 }

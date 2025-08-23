@@ -2,6 +2,8 @@ export interface CivicUser {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  walletAddress?: string;
   avatar?: string;
   ethereum?: {
     address: string;

@@ -3,7 +3,8 @@
 import React from 'react';
 import { Button, Box } from '@mui/material';
 import { GitHub, AccountBalanceWallet } from '@mui/icons-material';
-import { useCivicAuth } from '../hooks/useCivicAuth';
+import { UserButton } from '@civic/auth/react';
+import { useCivicAuth } from '../providers/CivicAuthProvider';
 import { isCivicEnabled } from '../utils/config';
 
 interface CivicAuthButtonsProps {
@@ -17,16 +18,15 @@ export const CivicAuthButtons: React.FC<CivicAuthButtonsProps> = ({
   fullWidth = true,
   onAuthSuccess,
 }) => {
-  const { signInWithGitHub, signInWithWallet, isLoading } = useCivicAuth();
+  const { signIn, isLoading, isAuthenticated } = useCivicAuth();
 
-  const handleGitHubAuth = async () => {
-    await signInWithGitHub();
-    onAuthSuccess?.();
-  };
-
-  const handleWalletAuth = async () => {
-    await signInWithWallet();
-    onAuthSuccess?.();
+  const handleCivicAuth = async () => {
+    try {
+      await signIn();
+      onAuthSuccess?.();
+    } catch (error) {
+      console.error('Civic auth error:', error);
+    }
   };
 
   if (!isCivicEnabled()) {
@@ -36,48 +36,60 @@ export const CivicAuthButtons: React.FC<CivicAuthButtonsProps> = ({
           fullWidth={fullWidth}
           variant={variant}
           startIcon={<GitHub />}
-          onClick={handleGitHubAuth}
+          onClick={() => console.log('Fallback GitHub auth')}
           disabled={isLoading}
           sx={{ py: 1.5 }}
         >
-          GitHub (Appwrite)
+          GitHub (Fallback)
         </Button>
         <Button
           fullWidth={fullWidth}
           variant={variant}
           startIcon={<AccountBalanceWallet />}
-          onClick={handleWalletAuth}
+          onClick={() => console.log('Fallback Wallet auth')}
+          disabled={isLoading}
+          sx={{ py: 1.5 }}
+        >
+          Web3 Wallet (Fallback)
+        </Button>
+      </Box>
+    );
+  }
+
+  // If user is already authenticated with Civic, show user button
+  if (isAuthenticated) {
+    return <UserButton />;
+  }
+
+  // Show Civic auth buttons
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {/* Use Civic's UserButton which handles sign in */}
+      <UserButton />
+      
+      {/* Custom buttons that trigger Civic auth */}
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        <Button
+          fullWidth={fullWidth}
+          variant={variant}
+          startIcon={<GitHub />}
+          onClick={handleCivicAuth}
+          disabled={isLoading}
+          sx={{ py: 1.5 }}
+        >
+          GitHub
+        </Button>
+        <Button
+          fullWidth={fullWidth}
+          variant={variant}
+          startIcon={<AccountBalanceWallet />}
+          onClick={handleCivicAuth}
           disabled={isLoading}
           sx={{ py: 1.5 }}
         >
           Web3 Wallet
         </Button>
       </Box>
-    );
-  }
-
-  return (
-    <Box sx={{ display: 'flex', gap: 2 }}>
-      <Button
-        fullWidth={fullWidth}
-        variant={variant}
-        startIcon={<GitHub />}
-        onClick={handleGitHubAuth}
-        disabled={isLoading}
-        sx={{ py: 1.5 }}
-      >
-        GitHub
-      </Button>
-      <Button
-        fullWidth={fullWidth}
-        variant={variant}
-        startIcon={<AccountBalanceWallet />}
-        onClick={handleWalletAuth}
-        disabled={isLoading}
-        sx={{ py: 1.5 }}
-      >
-        Web3 Wallet
-      </Button>
     </Box>
   );
 };
