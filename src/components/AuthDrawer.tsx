@@ -12,10 +12,10 @@ import {
   Tab,
   IconButton,
 } from '@mui/material';
-import { Close, Google } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import Image from 'next/image';
 import { useAuth } from '../contexts/AuthContext';
-import { CivicAuthButtons, isCivicEnabled } from '../integrations/civic';
+import { IntegrationAuthButtons } from '../integrations/IntegrationAuthButtons';
 
 interface AuthDrawerProps {
   open: boolean;
@@ -203,23 +203,9 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
             </Box>
 
             {/* Social Auth */}
-            {isCivicEnabled() ? (
-              <Box sx={{ mb: 2 }}>
-                <CivicAuthButtons onAuthSuccess={handleCivicAuthSuccess} />
-              </Box>
-            ) : (
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  startIcon={<Google />}
-                  onClick={() => handleSocialAuth('google')}
-                  sx={{ py: 1.5 }}
-                >
-                  Google
-                </Button>
-              </Box>
-            )}
+            <Box sx={{ mb: 2 }}>
+              <IntegrationAuthButtons onAuthSuccess={handleCivicAuthSuccess} />
+            </Box>
 
             {/* Footer */}
             <Typography
