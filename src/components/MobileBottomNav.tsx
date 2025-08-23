@@ -4,7 +4,8 @@ import {
   Paper, 
   BottomNavigation, 
   BottomNavigationAction,
-  Box
+  Box,
+  useTheme
 } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -26,6 +27,7 @@ const navItems = [
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+  const theme = useTheme();
 
   return (
     <Box
@@ -43,7 +45,9 @@ export default function MobileBottomNav() {
           borderRadius: '24px',
           overflow: 'hidden',
           backdropFilter: 'blur(10px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: theme.palette.mode === 'dark' 
+            ? 'rgba(45, 30, 19, 0.9)' // Dark brown with transparency
+            : 'rgba(255, 255, 255, 0.9)', // Light with transparency
         }}
       >
         <BottomNavigation 
