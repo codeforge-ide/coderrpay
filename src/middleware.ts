@@ -1,15 +1,8 @@
-import { authMiddleware } from "@civic/auth-web3/nextjs/middleware";
+// Civic middleware removed due to missing nextjs export in @civic/auth-web3
 
-const civicMiddleware = authMiddleware();
-
-export default function middleware(request: any) {
-  const isCivicEnabled = process.env.NEXT_PUBLIC_INTEGRATION_CIVIC === 'true';
-  
-  if (!isCivicEnabled) {
-    return;
-  }
-  
-  return civicMiddleware(request);
+export default function middleware() {
+  // No Civic middleware applied
+  return;
 }
 
 export const config = {

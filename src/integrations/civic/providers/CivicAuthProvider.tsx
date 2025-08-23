@@ -1,12 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, createConfig, http } from "wagmi";
-import { mainnet, sepolia, polygon } from "wagmi/chains";
 import { CivicUser, CivicAuthContextType } from '../types';
-
-const queryClient = new QueryClient();
 
 const CivicAuthContext = createContext<CivicAuthContextType | null>(null);
 
@@ -17,16 +12,6 @@ export const useCivicAuth = () => {
   }
   return context;
 };
-
-const wagmiConfig = createConfig({
-  chains: [mainnet, sepolia, polygon],
-  transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-    [polygon.id]: http(),
-  },
-  connectors: [],
-});
 
 interface CivicAuthProviderProps {
   children: React.ReactNode;
@@ -71,12 +56,8 @@ export const CivicAuthProvider: React.FC<CivicAuthProviderProps> = ({ children }
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={wagmiConfig}>
-        <CivicAuthContext.Provider value={value}>
-          {children}
-        </CivicAuthContext.Provider>
-      </WagmiProvider>
-    </QueryClientProvider>
+    <CivicAuthContext.Provider value={value}>
+      {children}
+    </CivicAuthContext.Provider>
   );
 };
