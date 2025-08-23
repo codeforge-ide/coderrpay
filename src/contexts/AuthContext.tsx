@@ -21,6 +21,9 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   loginWithCivic: (civicUser: any) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
+  sendOtp: (email: string) => Promise<void>;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
+  registerWithOtp: (email: string, username: string, otp: string) => Promise<void>;
   logout: () => Promise<void>;
   showAuthDrawer: boolean;
   setShowAuthDrawer: (show: boolean) => void;
@@ -115,6 +118,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
     } catch (error) {
       console.error('Error logging in with Civic:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const sendOtp = async (email: string) => {
+    setIsLoading(true);
+    try {
+      // For email OTP, we use createEmailToken instead of createPhoneToken
+      await account.createEmailToken('unique()', email);
+    } catch (error) {
+      console.error('Send OTP error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyOtp = async (email: string, otp: string) => {
+    setIsLoading(true);
+    try {
+      // Create session with email token
+      await account.createSession('unique()', otp);
+      const currentUser = await account.get();
+      setUser(mapAppwriteUserToUser(currentUser));
+    } catch (error) {
+      console.error('Verify OTP error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const registerWithOtp = async (email: string, username: string, otp: string) => {
+    setIsLoading(true);
+    try {
+      // For registration with OTP, we first create the user account
+      // Then verify with the OTP to create a session
+      await account.create('unique()', email, '', username);
+      await verifyOtp(email, otp);
+    } catch (error) {
+      console.error('Register with OTP error:', error);
       throw error;
     } finally {
       setIsLoading(false);

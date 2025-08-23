@@ -26,16 +26,47 @@ interface AuthDrawerProps {
 
 export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerProps) {
   const [activeTab, setActiveTab] = useState(0);
+  const [authMode, setAuthMode] = useState<'password' | 'otp'>('password');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login, register } = useAuth();
+  const { login, register, sendOtp, verifyOtp, registerWithOtp } = useAuth();
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
     setError('');
+    setOtpSent(false);
+    setOtp('');
+  };
+
+  const handleAuthModeChange = (mode: 'password' | 'otp') => {
+    setAuthMode(mode);
+    setError('');
+    setOtpSent(false);
+    setOtp('');
+  };
+
+  const handleSendOtp = async () => {
+    if (!email) {
+      setError('Please enter your email address');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      await sendOtp(email);
+      setOtpSent(true);
+    } catch (error: any) {
+      setError(error.message || 'Failed to send OTP');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
