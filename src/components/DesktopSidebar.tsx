@@ -18,14 +18,11 @@ import {
   Home,
   Code,
   MonetizationOn,
-  AccountBalanceWallet,
-  Settings,
   Explore,
   EmojiEvents,
   Business,
   AccountTree,
-  Login,
-  Message
+  Login
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -34,14 +31,11 @@ const drawerWidth = 320;
 const navItems = [
   { text: 'Home', icon: Home, href: '/', requireAuth: false },
   { text: 'Discover', icon: Explore, href: '/discover', requireAuth: false },
-  { text: 'Messages', icon: Message, href: '/messages', requireAuth: true },
   { text: 'Hackathons', icon: Code, href: '/hackathons', requireAuth: true },
   { text: 'Grants', icon: MonetizationOn, href: '/grants', requireAuth: true },
   { text: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
   { text: 'Projects', icon: AccountTree, href: '/projects', requireAuth: true },
   { text: 'Organizations', icon: Business, href: '/organizations', requireAuth: true },
-  { text: 'Wallet', icon: AccountBalanceWallet, href: '/wallet', requireAuth: true },
-  { text: 'Settings', icon: Settings, href: '/settings', requireAuth: true },
 ];
 
 export default function DesktopSidebar() {
