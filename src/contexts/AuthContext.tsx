@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { account } from '../lib/appwrite';
+import { sanitizeUsernameFromEmail } from '../utils/sanitizeUsername';
 import { Models } from 'appwrite';
 import { syncCivicUserToAppwrite, createCustomJWTForCivicUser } from '../integrations/appwrite/civic-auth';
 
@@ -91,7 +92,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     setIsLoading(true);
     try {
-      await account.create('unique()', email, password, email);
+      import { sanitizeUsernameFromEmail } from '../utils/sanitizeUsername';
+...
+      await account.create('unique()', email, password, sanitizeUsernameFromEmail(email));
       await login(email, password);
     } catch (error) {
       console.error('Registration error:', error);
@@ -159,7 +162,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       // For registration with OTP, we first create the user account
       // Then verify with the OTP to create a session
-      await account.create('unique()', email, '', email);
+      await account.create('unique()', email, '', sanitizeUsernameFromEmail(email));
       await verifyOtp(email, otp);
     } catch (error) {
       console.error('Register with OTP error:', error);
