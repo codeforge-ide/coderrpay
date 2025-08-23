@@ -87,7 +87,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
           await sendOtp(email);
           setOtpSent(true);
         } else {
-          await verifyOtp(email, otp);
+          await verifyOtp(email, otp); // verifyOtp only needs email, otp
           onAuthSuccess();
           onClose();
         }
