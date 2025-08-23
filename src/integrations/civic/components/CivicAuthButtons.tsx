@@ -9,17 +9,21 @@ interface CivicAuthButtonsProps {
   variant?: 'outlined' | 'contained';
   fullWidth?: boolean;
   onAuthSuccess?: () => void;
+  onClose?: () => void; // Add close callback
 }
 
 export const CivicAuthButtons: React.FC<CivicAuthButtonsProps> = ({
   variant = 'outlined',
   fullWidth = true,
   onAuthSuccess,
+  onClose,
 }) => {
   const { user, signIn, isLoading } = useUser();
 
   const handleSignIn = async () => {
     try {
+      // Close the auth modal first so Civic's overlay appears on top
+      onClose?.();
       await signIn();
       onAuthSuccess?.();
     } catch (error) {

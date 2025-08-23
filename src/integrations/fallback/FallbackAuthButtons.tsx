@@ -9,12 +9,14 @@ interface FallbackAuthButtonsProps {
   variant?: 'outlined' | 'contained';
   fullWidth?: boolean;
   onAuthSuccess?: () => void;
+  onClose?: () => void;
 }
 
 export const FallbackAuthButtons: React.FC<FallbackAuthButtonsProps> = ({
   variant = 'outlined',
   fullWidth = true,
   onAuthSuccess,
+  onClose,
 }) => {
   const handleGitHubAuth = async () => {
     console.log('Fallback GitHub auth via Appwrite OAuth');

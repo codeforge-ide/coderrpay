@@ -284,7 +284,10 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
             </Box>
             {/* Social Auth */}
             <Box sx={{ mb: 2 }}>
-              <IntegrationAuthButtons onAuthSuccess={handleCivicAuthSuccess} />
+              <IntegrationAuthButtons 
+                onAuthSuccess={handleCivicAuthSuccess} 
+                onClose={handleClose}
+              />
             </Box>
             {/* Footer */}
             <Typography
