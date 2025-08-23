@@ -28,11 +28,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
+    
+    // Force re-render of CSS variables
+    root.style.setProperty('--current-theme', theme);
   }, [theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
-      <div className={`theme-provider ${theme}`}>
+      <div className={`theme-provider ${theme}`} style={{
+        backgroundColor: 'var(--background)',
+        color: 'var(--foreground)',
+        minHeight: '100vh'
+      }}>
         <div className="background-grid" />
         <div className="content-wrapper">
           {children}

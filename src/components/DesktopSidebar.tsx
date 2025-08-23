@@ -16,8 +16,6 @@ import {
   ProjectsIcon
 } from './Icons';
 
-const drawerWidth = 320;
-
 const navItems = [
   { text: 'Home', icon: HomeIcon, href: '/' },
   { text: 'Sponsorships', icon: HeartIcon, href: '/sponsorships' },
@@ -36,25 +34,32 @@ export default function DesktopSidebar() {
 
   return (
     <div 
-      className="fixed left-0 top-0 h-full flex flex-col"
+      className="h-full flex flex-col p-4"
       style={{ 
-        width: drawerWidth,
         backgroundColor: 'var(--sidebar-bg)',
-        borderRight: '1px solid var(--border-color)'
+        borderRight: '1px solid var(--border-color)',
+        width: '320px'
       }}
     >
-      <div className="flex h-full min-h-[700px] flex-col justify-between p-4">
+      <div className="flex h-full min-h-[700px] flex-col justify-between">
         <div className="flex flex-col gap-4">
-          <div className="flex gap-3 items-center">
+          {/* Logo */}
+          <div className="flex gap-3 items-center mb-4">
             <div
-              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+              className="w-10 h-10 rounded-full bg-cover bg-center"
               style={{
                 backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuA0gOqBL0VzSyvjURKBux-Z9KkXt1cxaCUddSWnXZkm9I8Fast_eJiF4uoFnkef4NMYzF1c734QWhUliRKVeGEc_9kz-n_ZQMFStyQUSSX8gReph3vZLL43L_OtYUtI8-wMrJjawoCZ_0aRunRCYSjUWNVcVgs9KJ3mPinKECMlckwTxJY2DVAfQtPO5sAVeOYWfM4b81xjyNqq1ygYFJDB5hPpI-6ZXLfaNiAnTP0vo7HMW4FGWPqRRvCyaplVAKt7jBk7hmFvIr8")'
               }}
             />
-            <h1 className="text-current text-base font-medium leading-normal">CoderPay</h1>
+            <h1 
+              className="text-base font-medium"
+              style={{ color: 'var(--foreground)' }}
+            >
+              CoderPay
+            </h1>
           </div>
           
+          {/* Navigation */}
           <div className="flex flex-col gap-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -63,15 +68,14 @@ export default function DesktopSidebar() {
               return (
                 <Link key={item.text} href={item.href}>
                   <div
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:opacity-80 ${
-                      isActive ? '' : ''
-                    }`}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all hover:opacity-80 cursor-pointer"
                     style={{
-                      backgroundColor: isActive ? 'var(--card-bg)' : 'transparent'
+                      backgroundColor: isActive ? 'var(--card-bg)' : 'transparent',
+                      color: 'var(--foreground)'
                     }}
                   >
-                    <IconComponent className="w-6 h-6 text-current" />
-                    <p className="text-current text-sm font-medium leading-normal">{item.text}</p>
+                    <IconComponent className="w-6 h-6" />
+                    <p className="text-sm font-medium">{item.text}</p>
                   </div>
                 </Link>
               );
@@ -79,11 +83,12 @@ export default function DesktopSidebar() {
           </div>
         </div>
         
+        {/* New Button */}
         <button
-          className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity"
+          className="flex items-center justify-center rounded-lg h-10 px-4 text-white text-sm font-bold transition-opacity hover:opacity-90"
           style={{ backgroundColor: 'var(--accent-color)' }}
         >
-          <span className="truncate">New</span>
+          New
         </button>
       </div>
     </div>

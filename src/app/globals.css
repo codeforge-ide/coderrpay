@@ -1,13 +1,37 @@
 @import "tailwindcss";
 
+@theme {
+  --color-background: #f5f3f0;
+  --color-foreground: #2d2d2d;
+  --color-card-bg: #ffffff;
+  --color-sidebar-bg: #f9f7f4;
+  --color-border: #e5e1db;
+  --color-accent: #b35919;
+  --color-grid: rgb(181 89 25 / 0.05);
+  
+  --font-family-sans: "Manrope", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: #171411;
+    --color-foreground: #ffffff;
+    --color-card-bg: #382f29;
+    --color-sidebar-bg: #2a211c;
+    --color-border: #52463d;
+    --color-accent: #b35919;
+    --color-grid: rgb(82 70 61 / 0.3);
+  }
+}
+
 :root {
-  --background: #f5f3f0;
-  --foreground: #2d2d2d;
-  --card-bg: #ffffff;
-  --sidebar-bg: #f9f7f4;
-  --border-color: #e5e1db;
-  --accent-color: #b35919;
-  --grid-color: rgba(181, 89, 25, 0.05);
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --card-bg: var(--color-card-bg);
+  --sidebar-bg: var(--color-sidebar-bg);
+  --border-color: var(--color-border);
+  --accent-color: var(--color-accent);
+  --grid-color: var(--color-grid);
 }
 
 :root.dark {
@@ -17,31 +41,42 @@
   --sidebar-bg: #2a211c;
   --border-color: #52463d;
   --accent-color: #b35919;
-  --grid-color: rgba(82, 70, 61, 0.3);
+  --grid-color: rgb(82 70 61 / 0.3);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: "Manrope", "Noto Sans", sans-serif;
-  --font-mono: var(--font-geist-mono);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Manrope", "Noto Sans", sans-serif;
-  min-height: 100vh;
+:root.light {
+  --background: #f5f3f0;
+  --foreground: #2d2d2d;
+  --card-bg: #ffffff;
+  --sidebar-bg: #f9f7f4;
+  --border-color: #e5e1db;
+  --accent-color: #b35919;
+  --grid-color: rgb(181 89 25 / 0.05);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: "Manrope", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+}
+
 .theme-provider {
   position: relative;
   min-height: 100vh;
   width: 100%;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 .background-grid {

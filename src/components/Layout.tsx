@@ -7,28 +7,24 @@ import { ThemeProvider } from './ThemeProvider';
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen">
-      <div className="hidden md:block">
+    <>
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block fixed left-0 top-0 h-full w-80 z-10">
         <DesktopSidebar />
       </div>
       
-      <main 
-        className="flex-1 p-6 md:pl-0"
-        style={{ 
-          marginLeft: 'clamp(0px, 100vw - 100vw, 320px)',
-          paddingLeft: 'max(24px, calc((100vw - 320px - 960px) / 2))',
-          paddingBottom: '100px'
-        }}
-      >
-        <div className="md:ml-[320px]">
+      {/* Main Content */}
+      <div className="md:ml-80 min-h-screen">
+        <main className="p-6 pb-24 md:pb-6">
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
       
+      {/* Mobile Bottom Navigation */}
       <div className="md:hidden">
         <MobileBottomNav />
       </div>
-    </div>
+    </>
   );
 }
 
