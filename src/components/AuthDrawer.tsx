@@ -81,7 +81,12 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
           await login(email, password);
         } else {
           // Sign Up with password
-          await register(email, password, username);
+          if (!/^[a-zA-Z0-9_-]{3,20}$/.test(username)) {
+  setError('Username must be 3-20 characters, only letters, numbers, underscores, and hyphens allowed.');
+  setIsLoading(false);
+  return;
+}
+await register(email, password, username);
         }
         onAuthSuccess();
         onClose();
@@ -98,7 +103,12 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
             await verifyOtp(email, otp);
           } else {
             // Sign Up with OTP
-            await registerWithOtp(email, username, otp);
+            if (!/^[a-zA-Z0-9_-]{3,20}$/.test(username)) {
+  setError('Username must be 3-20 characters, only letters, numbers, underscores, and hyphens allowed.');
+  setIsLoading(false);
+  return;
+}
+await registerWithOtp(email, username, otp);
           }
           onAuthSuccess();
           onClose();
@@ -219,7 +229,10 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                     fullWidth
                     label="Username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+  const value = e.target.value.replace(/[^a-zA-Z0-9_-]/g, '');
+  setUsername(value);
+}}
                     variant="outlined"
                     sx={{ mb: 2 }}
                     required
@@ -249,16 +262,19 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                 ) : (
                   <>
                     {otpSent && (
-                      <TextField
-                        fullWidth
-                        label="Enter OTP"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        variant="outlined"
-                        placeholder="6-digit code"
-                        inputProps={{ maxLength: 6 }}
-                        required
-                      />
+<TextField
+                    fullWidth
+                    label="Username"
+                    value={username}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9_-]/g, '');
+                      setUsername(value);
+                    }}
+                    variant="outlined"
+                    sx={{ mb: 2 }}
+                    required
+                    helperText="3-20 chars, letters, numbers, _ and - only"
+                  />
                     )}
                     {otpSent && (
                       <Button
