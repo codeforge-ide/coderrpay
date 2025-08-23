@@ -22,6 +22,7 @@ import {
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Mock data for conversations
 const conversations = [
@@ -109,157 +110,159 @@ export default function MessagesPage() {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ py: 3, height: 'calc(100vh - 100px)' }}>
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold' }}>
-        Messages
-      </Typography>
+    <ProtectedRoute requireAuth>
+      <Container maxWidth="xl" sx={{ py: 3, height: 'calc(100vh - 100px)' }}>
+        <Typography variant="h4" sx={{ mb: 3, fontWeight: 'bold' }}>
+          Messages
+        </Typography>
 
-      <Box sx={{ display: 'flex', height: '100%', gap: 3 }}>
-        {/* Conversations List */}
-        <Paper sx={{ width: 320, display: 'flex', flexDirection: 'column' }}>
-          <Box sx={{ p: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Active Conversations
-            </Typography>
-          </Box>
-          <Divider />
-          <List sx={{ flex: 1, p: 0 }}>
-            {conversations.map((conversation) => (
-              <ListItem key={conversation.id} disablePadding>
-                <ListItemButton
-                  selected={selectedConversation.id === conversation.id}
-                  onClick={() => setSelectedConversation(conversation)}
-                  sx={{ px: 2, py: 1.5 }}
-                >
-                  <ListItemAvatar>
-                    <Avatar src={conversation.avatar} sx={{ width: 48, height: 48 }}>
-                      {conversation.name[0]}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={conversation.name}
-                    secondary={conversation.lastMessage}
-                    primaryTypographyProps={{
-                      fontWeight: 'medium',
-                      fontSize: '1rem'
-                    }}
-                    secondaryTypographyProps={{
-                      sx: {
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
+        <Box sx={{ display: 'flex', height: '100%', gap: 3 }}>
+          {/* Conversations List */}
+          <Paper sx={{ width: 320, display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ p: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                Active Conversations
+              </Typography>
+            </Box>
+            <Divider />
+            <List sx={{ flex: 1, p: 0 }}>
+              {conversations.map((conversation) => (
+                <ListItem key={conversation.id} disablePadding>
+                  <ListItemButton
+                    selected={selectedConversation.id === conversation.id}
+                    onClick={() => setSelectedConversation(conversation)}
+                    sx={{ px: 2, py: 1.5 }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar src={conversation.avatar} sx={{ width: 48, height: 48 }}>
+                        {conversation.name[0]}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={conversation.name}
+                      secondary={conversation.lastMessage}
+                      primaryTypographyProps={{
+                        fontWeight: 'medium',
+                        fontSize: '1rem'
+                      }}
+                      secondaryTypographyProps={{
+                        sx: {
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
 
-        {/* Chat Area */}
-        <Paper sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          {/* Chat Header */}
-          <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              {selectedConversation.name}
-            </Typography>
-          </Box>
+          {/* Chat Area */}
+          <Paper sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {/* Chat Header */}
+            <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                {selectedConversation.name}
+              </Typography>
+            </Box>
 
-          {/* Messages */}
-          <Box sx={{ flex: 1, p: 2, overflow: 'auto' }}>
-            {messages.map((message) => (
-              <Box
-                key={message.id}
-                sx={{
-                  display: 'flex',
-                  justifyContent: message.isOwn ? 'flex-end' : 'flex-start',
-                  mb: 2,
-                  alignItems: 'flex-end',
-                  gap: 1
-                }}
-              >
-                {!message.isOwn && (
-                  <Avatar src={message.avatar} sx={{ width: 32, height: 32 }}>
-                    {message.senderName[0]}
-                  </Avatar>
-                )}
+            {/* Messages */}
+            <Box sx={{ flex: 1, p: 2, overflow: 'auto' }}>
+              {messages.map((message) => (
                 <Box
+                  key={message.id}
                   sx={{
-                    maxWidth: '60%',
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: message.isOwn ? 'flex-end' : 'flex-start'
+                    justifyContent: message.isOwn ? 'flex-end' : 'flex-start',
+                    mb: 2,
+                    alignItems: 'flex-end',
+                    gap: 1
                   }}
                 >
-                  <Typography
-                    variant="caption"
+                  {!message.isOwn && (
+                    <Avatar src={message.avatar} sx={{ width: 32, height: 32 }}>
+                      {message.senderName[0]}
+                    </Avatar>
+                  )}
+                  <Box
                     sx={{
-                      color: 'text.secondary',
-                      mb: 0.5,
-                      px: 1
+                      maxWidth: '60%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: message.isOwn ? 'flex-end' : 'flex-start'
                     }}
                   >
-                    {message.senderName}
-                  </Typography>
-                  <Paper
-                    sx={{
-                      px: 2,
-                      py: 1.5,
-                      backgroundColor: message.isOwn ? 'primary.main' : theme.palette.mode === 'dark' ? 'grey.800' : 'grey.100',
-                      color: message.isOwn ? 'primary.contrastText' : 'text.primary'
-                    }}
-                  >
-                    <Typography variant="body1">
-                      {message.content}
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                        mb: 0.5,
+                        px: 1
+                      }}
+                    >
+                      {message.senderName}
                     </Typography>
-                  </Paper>
+                    <Paper
+                      sx={{
+                        px: 2,
+                        py: 1.5,
+                        backgroundColor: message.isOwn ? 'primary.main' : theme.palette.mode === 'dark' ? 'grey.800' : 'grey.100',
+                        color: message.isOwn ? 'primary.contrastText' : 'text.primary'
+                      }}
+                    >
+                      <Typography variant="body1">
+                        {message.content}
+                      </Typography>
+                    </Paper>
+                  </Box>
+                  {message.isOwn && (
+                    <Avatar src={message.avatar} sx={{ width: 32, height: 32 }}>
+                      {message.senderName[0]}
+                    </Avatar>
+                  )}
                 </Box>
-                {message.isOwn && (
-                  <Avatar src={message.avatar} sx={{ width: 32, height: 32 }}>
-                    {message.senderName[0]}
-                  </Avatar>
-                )}
-              </Box>
-            ))}
-          </Box>
-
-          {/* Message Input */}
-          <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
-              <Avatar sx={{ width: 32, height: 32, mb: 1 }}>
-                Me
-              </Avatar>
-              <TextField
-                fullWidth
-                multiline
-                maxRows={4}
-                placeholder="Type a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                variant="outlined"
-                size="small"
-                sx={{ flex: 1 }}
-              />
-              <IconButton
-                color="primary"
-                sx={{ mb: 1 }}
-              >
-                <Image />
-              </IconButton>
-              <IconButton
-                color="primary"
-                onClick={handleSendMessage}
-                disabled={!newMessage.trim()}
-                sx={{ mb: 1 }}
-              >
-                <Send />
-              </IconButton>
+              ))}
             </Box>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+
+            {/* Message Input */}
+            <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
+                <Avatar sx={{ width: 32, height: 32, mb: 1 }}>
+                  Me
+                </Avatar>
+                <TextField
+                  fullWidth
+                  multiline
+                  maxRows={4}
+                  placeholder="Type a message..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  variant="outlined"
+                  size="small"
+                  sx={{ flex: 1 }}
+                />
+                <IconButton
+                  color="primary"
+                  sx={{ mb: 1 }}
+                >
+                  <Image />
+                </IconButton>
+                <IconButton
+                  color="primary"
+                  onClick={handleSendMessage}
+                  disabled={!newMessage.trim()}
+                  sx={{ mb: 1 }}
+                >
+                  <Send />
+                </IconButton>
+              </Box>
+            </Box>
+          </Paper>
+        </Box>
+      </Container>
+    </ProtectedRoute>
   );
 }

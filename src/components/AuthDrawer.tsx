@@ -11,6 +11,7 @@ import {
   Tabs,
   Tab,
   IconButton,
+  Alert,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import Image from 'next/image';
@@ -28,25 +29,35 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { login, register } = useAuth();
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
+    setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate Appwrite authentication
-    const mockUser = {
-      id: Date.now().toString(),
-      name: name || 'Demo User',
-      email: email,
-      provider: 'appwrite' as const,
-    };
+    setIsLoading(true);
+    setError('');
     
-    login(mockUser);
-    onAuthSuccess();
-    onClose();
+    try {
+      if (activeTab === 0) {
+        // Sign In
+        await login(email, password);
+      } else {
+        // Sign Up
+        await register(email, password, name);
+      }
+      onAuthSuccess();
+      onClose();
+    } catch (error: any) {
+      setError(error.message || 'Authentication failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCivicAuthSuccess = () => {
@@ -122,6 +133,12 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
 
           {/* Auth Form */}
           <Box sx={{ px: 4, pb: 4 }}>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            
             <form onSubmit={handleSubmit}>
               <Box sx={{ mb: 3 }}>
                 {activeTab === 1 && (
@@ -132,6 +149,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                     onChange={(e) => setName(e.target.value)}
                     variant="outlined"
                     sx={{ mb: 2 }}
+                    required
                   />
                 )}
                 <TextField
@@ -142,6 +160,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                   onChange={(e) => setEmail(e.target.value)}
                   variant="outlined"
                   sx={{ mb: 2 }}
+                  required
                 />
                 <TextField
                   fullWidth
@@ -150,6 +169,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   variant="outlined"
+                  required
                 />
               </Box>
 
@@ -159,8 +179,9 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
                 variant="contained"
                 size="large"
                 sx={{ mb: 3, py: 1.5 }}
+                disabled={isLoading}
               >
-                {activeTab === 0 ? 'Sign In' : 'Create Account'}
+                {isLoading ? 'Loading...' : (activeTab === 0 ? 'Sign In' : 'Create Account')}
               </Button>
             </form>
 

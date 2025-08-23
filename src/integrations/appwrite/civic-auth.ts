@@ -15,8 +15,6 @@ export const getAppwriteConfig = (): AppwriteConfig => {
 };
 
 export const createAppwriteUserFromCivic = async (civicUser: CivicUser) => {
-  console.log('Creating Appwrite user from Civic user:', civicUser);
-  
   try {
     const appwriteUser = {
       $id: civicUser.id,
@@ -27,7 +25,6 @@ export const createAppwriteUserFromCivic = async (civicUser: CivicUser) => {
       ethereum_address: civicUser.ethereum?.address,
     };
 
-    console.log('Appwrite user data:', appwriteUser);
     return appwriteUser;
   } catch (error) {
     console.error('Error creating Appwrite user from Civic:', error);
@@ -36,10 +33,17 @@ export const createAppwriteUserFromCivic = async (civicUser: CivicUser) => {
 };
 
 export const syncCivicUserToAppwrite = async (civicUser: CivicUser) => {
-  console.log('Syncing Civic user to Appwrite database...');
-  
   try {
+    // Create a custom JWT session with Civic user data
+    // This is a placeholder - in a real implementation, you would:
+    // 1. Create an Appwrite user account if it doesn't exist
+    // 2. Use Appwrite's custom JWT or OAuth to create a session
+    // 3. Store additional user preferences and metadata
+    
     const userData = await createAppwriteUserFromCivic(civicUser);
+    
+    // For now, we'll return the user data
+    // In production, this should create an actual Appwrite session
     return userData;
   } catch (error) {
     console.error('Error syncing Civic user to Appwrite:', error);
@@ -48,18 +52,21 @@ export const syncCivicUserToAppwrite = async (civicUser: CivicUser) => {
 };
 
 export const createCustomJWTForCivicUser = async (civicUser: CivicUser) => {
-  console.log('Creating custom JWT for Civic user authentication...');
-  
   try {
+    // This is a placeholder for creating a custom JWT
+    // In a real implementation, you would:
+    // 1. Use a server-side endpoint to create a signed JWT
+    // 2. Use Appwrite's custom authentication with the JWT
+    // 3. Return the Appwrite session
+    
     const jwt = {
       userId: civicUser.id,
       email: civicUser.email,
       provider: 'civic',
-      ethereum_address: civicUser.ethereum?.address,
+      ethernet_address: civicUser.ethereum?.address,
       timestamp: Date.now(),
     };
 
-    console.log('Custom JWT payload:', jwt);
     return jwt;
   } catch (error) {
     console.error('Error creating custom JWT:', error);
