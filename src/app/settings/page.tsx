@@ -21,7 +21,6 @@ import {
   ListItemSecondaryAction,
   Divider,
   IconButton,
-  Paper,
 } from '@mui/material';
 import {
   Settings,
@@ -63,7 +62,7 @@ const SettingsPage: React.FC = () => {
         </Box>
 
         {/* Tab Navigation */}
-        <Paper sx={{ mb: 3, borderRadius: 2 }}>
+        <Card sx={{ mb: 3 }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
@@ -90,7 +89,7 @@ const SettingsPage: React.FC = () => {
               value="account"
             />
           </Tabs>
-        </Paper>
+        </Card>
 
         {/* Settings Tab */}
         {activeTab === 'settings' && (
@@ -140,7 +139,7 @@ const SettingsPage: React.FC = () => {
                     Theme Preview
                   </Typography>
                   <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                    <Paper
+                    <Card
                       sx={{
                         p: 2,
                         border: theme === 'light' ? 2 : 1,
@@ -158,8 +157,8 @@ const SettingsPage: React.FC = () => {
                       <Typography variant="caption" display="block" sx={{ opacity: 0.7 }}>
                         Brownish white background
                       </Typography>
-                    </Paper>
-                    <Paper
+                    </Card>
+                    <Card
                       sx={{
                         p: 2,
                         border: theme === 'dark' ? 2 : 1,
@@ -177,7 +176,7 @@ const SettingsPage: React.FC = () => {
                       <Typography variant="caption" display="block" sx={{ opacity: 0.7 }}>
                         Dark background
                       </Typography>
-                    </Paper>
+                    </Card>
                   </Box>
                 </Box>
               </CardContent>
@@ -238,15 +237,14 @@ const SettingsPage: React.FC = () => {
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
                   <Avatar
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0gOqBL0VzSyvjURKBux-Z9KkXt1cxaCUddSWnXZkm9I8Fast_eJiF4uoFnkef4NMYzF1c734QWhUliRKVeGEc_9kz-n_ZQMFStyQUSSX8gReph3vZLL43L_OtYUtI8-wMrJjawoCZ_0aRunRCYSjUWNVcVgs9KJ3mPinKECMlckwTxJY2DVAfQtPO5sAVeOYWfM4b81xjyNqq1ygYFJDB5hPpI-6ZXLfaNiAnTP0vo7HMW4FGWPqRRvCyaplVAKt7jBk7hmFvIr8"
                     sx={{ width: 64, height: 64 }}
-                  />
+                  >U</Avatar>
                   <Box>
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      CoderPay
+                      User Name
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      coder@example.com
+                      user@example.com
                     </Typography>
                   </Box>
                 </Box>
@@ -255,14 +253,14 @@ const SettingsPage: React.FC = () => {
                   <TextField
                     fullWidth
                     label="Display Name"
-                    defaultValue="CoderPay"
+                    defaultValue="User Name"
                     variant="outlined"
                   />
                   <TextField
                     fullWidth
                     label="Email"
                     type="email"
-                    defaultValue="coder@example.com"
+                    defaultValue="user@example.com"
                     variant="outlined"
                   />
                   <TextField
@@ -270,7 +268,7 @@ const SettingsPage: React.FC = () => {
                     label="Bio"
                     multiline
                     rows={3}
-                    defaultValue="Passionate developer working on open source projects and contributing to the developer community."
+                    placeholder="Tell us about yourself"
                     variant="outlined"
                   />
                 </Box>
@@ -301,16 +299,16 @@ const SettingsPage: React.FC = () => {
                     </ListItemAvatar>
                     <ListItemText
                       primary="GitHub"
-                      secondary="Connected"
+                      secondary="Not Connected"
                     />
                     <ListItemSecondaryAction>
                       <Button
-                        variant="outlined"
-                        color="error"
+                        variant="contained"
+                        color="primary"
                         size="small"
                         sx={{ textTransform: 'none' }}
                       >
-                        Disconnect
+                        Connect
                       </Button>
                     </ListItemSecondaryAction>
                   </ListItem>

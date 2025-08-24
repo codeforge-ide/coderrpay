@@ -6,7 +6,8 @@ import {
   Typography, 
   Button, 
   Container, 
-  Paper,
+  Card,
+  CardContent,
   IconButton,
   useTheme,
   Fade,
@@ -200,20 +201,20 @@ export default function PitchPage() {
             {currentSlideData.points && (
               <Stack spacing={2} sx={{ maxWidth: '600px', mx: 'auto', mb: 4 }}>
                 {currentSlideData.points.map((point, index) => (
-                  <Paper
+                  <Card
                     key={index}
                     sx={{
-                      p: 2,
                       backgroundColor: 'rgba(255,255,255,0.1)',
                       backdropFilter: 'blur(10px)',
-                      borderRadius: 2,
                       textAlign: 'left'
                     }}
                   >
-                    <Typography variant="body1" sx={{ color: 'white', fontWeight: 500 }}>
-                      {point}
-                    </Typography>
-                  </Paper>
+                    <CardContent>
+                      <Typography variant="body1" sx={{ color: 'white', fontWeight: 500 }}>
+                        {point}
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 ))}
               </Stack>
             )}
@@ -222,24 +223,24 @@ export default function PitchPage() {
             {currentSlideData.features && (
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3, maxWidth: '800px', mx: 'auto', mb: 4 }}>
                 {currentSlideData.features.map((feature, index) => (
-                  <Paper
+                  <Card
                     key={index}
                     sx={{
-                      p: 3,
                       backgroundColor: 'rgba(255,255,255,0.1)',
                       backdropFilter: 'blur(10px)',
-                      borderRadius: 3,
                       textAlign: 'center'
                     }}
                   >
-                    <feature.icon sx={{ fontSize: 40, mb: 2, color: 'white' }} />
-                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, mb: 1 }}>
-                      {feature.text}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-                      {feature.desc}
-                    </Typography>
-                  </Paper>
+                    <CardContent>
+                      <feature.icon sx={{ fontSize: 40, mb: 2, color: 'white' }} />
+                      <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, mb: 1 }}>
+                        {feature.text}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                        {feature.desc}
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 ))}
               </Box>
             )}

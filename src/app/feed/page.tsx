@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { TextField, InputAdornment, Tabs, Tab, Box, Avatar, Typography, IconButton, Paper } from '@mui/material';
+import { TextField, InputAdornment, Tabs, Tab, Box, Avatar, Typography, IconButton, Card, CardContent } from '@mui/material';
 import { Search, Favorite, ChatBubbleOutline, Send } from '@mui/icons-material';
 import ProjectCard from '@/components/ProjectCard';
 import { mockProjects } from '@/data/projects';
@@ -28,70 +28,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const mockPosts = [
-  {
-    id: 1,
-    user: {
-      name: 'Alex Turner',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-wG8niXwATOKH8c8e0L6Z6onDE4V6DFYGiI9OELbyN_uXyClx5YwmO-WJl9QwbY5b6KNBuZ382wMksJCdLLrjY_7VBXGxY2CnzRL4JPty7eULRWO-rTrcBuPqmv4Mfazkqn7ee0DNXc97Rw0XgYUBfwki0t0WlKU18RXvRbrC_wInAuTDNcSqAHsRAA8eaTdnqYZm6TNJO0vKuTmNlltDSsqynD6N4nPOqZdzEWRrHpPjjT7UrF1XAAVuJ_ODWs92aWnjucLHCDw',
-    },
-    content: 'Just finished a new project using React and Node.js! Check it out on my GitHub: github.com/alex-turner/my-project',
-    timestamp: '2h',
-    likes: 23,
-    comments: 5,
-    shares: 2,
-  },
-  {
-    id: 2,
-    user: {
-      name: 'Sarah Chen',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDmrTHFd3QWFTU1dR2RHhA__z0Kg6qDwGB4WU62JGAqkPX_6fWwwKv37Mui2F0RpH2ta8fSEJbDOb6xPqidVMl7kdSQc1km8ozT5IRxWPBUigRbdgINBbCaGcZiptoSkRzXLYpD69GE4UpdUNG3zwVxju0oHYXY63YJ9UMgK1Zmo3M_1fkYlvD5JD7SRhyDWeUJq_eKPrcc7NPjDLtHry1Ak278saFeGr7hiIco_SnrHODwE7ii3avGw-HDcZa4rEICfSJblgJlJnE',
-    },
-    content: 'Looking for collaborators on an open-source project focused on AI and machine learning. DM me if interested!',
-    timestamp: '4h',
-    likes: 15,
-    comments: 3,
-    shares: 1,
-  },
-  {
-    id: 3,
-    user: {
-      name: 'David Lee',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBo39pku9xc0Jki8dEnB0uLbPCczZPdVDvKEdw07VHnO86koeeCXKePCV_DyBmp7lYihaiqWcqGYAneOG6Maz-1D7J0XMh4wtzc1YboWfCTtSa9RzfAvmS1uPiUK6u0mvX1sKn_RUmmluK8G29K0IiXwjEwo1k9jVyCz2uQH0lc99n4XrTEiV52sTynWkrTeEa67X99aRPw_2aSLf-ncI7xucExigK_7TiJ-d-2YJ4XynJX_KwqF-i1huGaC-aUJxA0J6w0N5RdhvA',
-    },
-    content: 'Excited to announce that I\'ll be speaking at the upcoming DevCon conference! Topic: Building Scalable Web Applications.',
-    timestamp: '6h',
-    likes: 30,
-    comments: 8,
-    shares: 4,
-  },
-  {
-    id: 4,
-    user: {
-      name: 'Emily White',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD9m4gK6XfTNHADJ-L-VhR1nGWqsLB1nqomtmVLreTdkbGzERpYFlYkMy06AfN3n7Mw8h8l4B9b4hBX2Je9CmWVsNteeNi9WHa4njxkfQQbFaR6aYQm3piXsPPQ9XQwmSLHA2CzX6FiTlCKu2Ekp8SVgCCrLzt29XX2wSfluXPc7suC1v4aLU9o3Fcm0OClTF4j2WMVfce_-cuFbV0RA53kt91JU7cZuBL_vGOxuoTPUoOfhyO812tTSOD4mE-uGBWWZn-PgzJUpZI',
-    },
-    content: 'Just launched my personal portfolio website! Built with Next.js and Tailwind CSS. Feedback is welcome!',
-    timestamp: '8h',
-    likes: 18,
-    comments: 6,
-    shares: 2,
-  },
-  {
-    id: 5,
-    user: {
-      name: 'Mark Johnson',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBUwZcmfrDoXPPI6pP440ngoi3YLEs1-xNGlrmI3kx-R_R8Ex7oXRGE-GVyLTz6ZaIk7JjjfTfD3DWD3uDCQ4Bspjet_TcNDE7JffUb5jC1MPHr8eC_e7BW-NYGN6GACGdZTz4xiPZTcQEIZFSnI_fmi7rT-6AzB3iQ0nrDpB2oZW3XaswgEsoPJbJMf4hb28uPJ_Ec_wUx9SdbnkAcHBP1_BYisdIJyB5rDlYmVcv0Bj9z-9JKb5JyauaxhG27BP91yXzsBcHlD08',
-    },
-    content: 'Participating in the Global Hackathon this weekend! Working on a project to improve accessibility in web applications. Wish me luck!',
-    timestamp: '10h',
-    likes: 25,
-    comments: 7,
-    shares: 3,
-  },
-];
-
-function PostCard({ post }: { post: typeof mockPosts[0] }) {
+function PostCard({ post }: { post: any }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes);
 
@@ -101,124 +38,117 @@ function PostCard({ post }: { post: typeof mockPosts[0] }) {
   };
 
   return (
-    <Paper 
-      elevation={0} 
-      sx={{ 
-        bgcolor: 'transparent', 
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        borderRadius: 0,
-        p: 2
-      }}
-    >
-      <Box sx={{ display: 'flex', gap: 1.5, mb: 1 }}>
-        <Avatar 
-          src={post.user.avatar} 
-          sx={{ width: 40, height: 40 }}
-        />
-        <Box sx={{ flex: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+    <Card sx={{ mb: 2 }}>
+      <CardContent>
+        <Box sx={{ display: 'flex', gap: 1.5, mb: 1 }}>
+          <Avatar
+            src={post.user.avatar}
+            sx={{ width: 40, height: 40 }}
+          />
+          <Box sx={{ flex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                  color: 'text.primary'
+                }}
+              >
+                {post.user.name}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: '0.875rem'
+                }}
+              >
+                {post.timestamp}
+              </Typography>
+            </Box>
             <Typography 
               variant="body2" 
               sx={{ 
-                fontWeight: 600,
-                color: 'text.primary'
-              }}
-            >
-              {post.user.name}
-            </Typography>
-            <Typography 
-              variant="body2" 
-              sx={{ 
-                color: 'text.secondary',
+                color: 'text.primary',
+                lineHeight: 1.4,
                 fontSize: '0.875rem'
               }}
             >
-              {post.timestamp}
+              {post.content}
             </Typography>
           </Box>
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              color: 'text.primary',
-              lineHeight: 1.4,
-              fontSize: '0.875rem'
-            }}
-          >
-            {post.content}
-          </Typography>
         </Box>
-      </Box>
-      
-      <Box sx={{ display: 'flex', gap: 1, mt: 1, ml: 6.5 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <IconButton 
-            size="small" 
-            onClick={handleLike}
-            sx={{ 
-              color: liked ? 'error.main' : 'text.secondary',
-              '&:hover': { bgcolor: 'action.hover' }
-            }}
-          >
-            <Favorite sx={{ fontSize: 20 }} />
-          </IconButton>
-          <Typography 
-            variant="caption" 
-            sx={{ 
-              color: 'text.secondary',
-              fontWeight: 600,
-              fontSize: '0.75rem'
-            }}
-          >
-            {likeCount}
-          </Typography>
+
+        <Box sx={{ display: 'flex', gap: 1, mt: 1, ml: 6.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <IconButton
+              size="small"
+              onClick={handleLike}
+              sx={{
+                color: liked ? 'error.main' : 'text.secondary',
+                '&:hover': { bgcolor: 'action.hover' }
+              }}
+            >
+              <Favorite sx={{ fontSize: 20 }} />
+            </IconButton>
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+                fontWeight: 600,
+                fontSize: '0.75rem'
+              }}
+            >
+              {likeCount}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <IconButton
+              size="small"
+              sx={{
+                color: 'text.secondary',
+                '&:hover': { bgcolor: 'action.hover' }
+              }}
+            >
+              <ChatBubbleOutline sx={{ fontSize: 20 }} />
+            </IconButton>
+            <Typography 
+              variant="caption"
+              sx={{ 
+                color: 'text.secondary',
+                fontWeight: 600,
+                fontSize: '0.75rem'
+              }}
+            >
+              {post.comments}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <IconButton
+              size="small"
+              sx={{
+                color: 'text.secondary',
+                '&:hover': { bgcolor: 'action.hover' }
+              }}
+            >
+              <Send sx={{ fontSize: 20 }} />
+            </IconButton>
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+                fontWeight: 600,
+                fontSize: '0.75rem'
+              }}
+            >
+              {post.shares}
+            </Typography>
+          </Box>
         </Box>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <IconButton 
-            size="small" 
-            sx={{ 
-              color: 'text.secondary',
-              '&:hover': { bgcolor: 'action.hover' }
-            }}
-          >
-            <ChatBubbleOutline sx={{ fontSize: 20 }} />
-          </IconButton>
-          <Typography 
-            variant="caption" 
-            sx={{ 
-              color: 'text.secondary',
-              fontWeight: 600,
-              fontSize: '0.75rem'
-            }}
-          >
-            {post.comments}
-          </Typography>
-        </Box>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <IconButton 
-            size="small" 
-            sx={{ 
-              color: 'text.secondary',
-              '&:hover': { bgcolor: 'action.hover' }
-            }}
-          >
-            <Send sx={{ fontSize: 20 }} />
-          </IconButton>
-          <Typography 
-            variant="caption" 
-            sx={{ 
-              color: 'text.secondary',
-              fontWeight: 600,
-              fontSize: '0.75rem'
-            }}
-          >
-            {post.shares}
-          </Typography>
-        </Box>
-      </Box>
-    </Paper>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -391,60 +321,14 @@ export default function FeedPage() {
           </Tabs>
         </Box>
 
-        <Box>
-          {mockPosts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
+        <Box sx={{ p: 2 }}>
+          <Typography sx={{ color: 'text.secondary' }}>No posts in your feed yet.</Typography>
         </Box>
       </TabPanel>
 
       <TabPanel value={mainTab} index={1}>
         <Box sx={{ p: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, mb: 3 }}>
-            <TextField
-              fullWidth
-              placeholder="Search Projects"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  bgcolor: 'background.paper',
-                }
-              }}
-            />
-            <Box sx={{ minWidth: 120 }}>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '14px',
-                  borderRadius: '8px',
-                  border: '1px solid rgba(255, 255, 255, 0.23)',
-                  backgroundColor: 'var(--card-bg)',
-                  color: 'inherit',
-                  fontSize: '1rem',
-                }}
-              >
-                <option value="stars">Sort by Stars</option>
-                <option value="name">Sort by Name</option>
-              </select>
-            </Box>
-          </Box>
-          
-          <Box sx={{ 
-            display: 'grid', 
-            gridTemplateColumns: {
-              xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)'
-            },
-            gap: 2
-          }}>
-            {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </Box>
+          <Typography sx={{ color: 'text.secondary' }}>No projects to discover yet.</Typography>
         </Box>
       </TabPanel>
     </Box>

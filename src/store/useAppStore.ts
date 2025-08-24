@@ -32,33 +32,10 @@ interface Activity {
 export const useAppStore = create<AppStore>((set) => ({
   user: null,
   isLoading: false,
-  totalEarned: 12500,
-  activeSponsorships: 3,
-  hackathonsParticipated: 5,
-  recentActivity: [
-    {
-      id: '1',
-      type: 'sponsorship',
-      title: 'Received Sponsorship from OpenSourceProject',
-      description: '$500',
-      amount: '$500',
-      timestamp: '2024-01-15T10:30:00Z'
-    },
-    {
-      id: '2',
-      type: 'hackathon',
-      title: 'Participated in AI Hackathon',
-      description: 'Won 2nd Place',
-      timestamp: '2024-01-14T15:45:00Z'
-    },
-    {
-      id: '3',
-      type: 'connection',
-      title: 'Connected GitHub Account',
-      description: 'Successfully linked',
-      timestamp: '2024-01-13T09:20:00Z'
-    }
-  ],
+  totalEarned: 0,
+  activeSponsorships: 0,
+  hackathonsParticipated: 0,
+  recentActivity: [],
   setUser: (user) => set({ user }),
   setLoading: (isLoading) => set({ isLoading }),
   updateStats: (stats) => set((state) => ({ ...state, ...stats })),
