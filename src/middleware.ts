@@ -10,7 +10,8 @@ export const config = {
     '/settings/:path*',
     '/messages/:path*',
     '/projects/:path*',
-    // Exclude public routes
-    '/((?!_next|favicon.ico|sitemap.xml|robots.txt|.*\\.jpg|.*\\.png|.*\\.svg|.*\\.gif|api|auth).*)',
+    '/hackathons/:path*',
+    '/grants/:path*',
+    '/organizations/:path*',
   ],
 };
