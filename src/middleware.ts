@@ -9,9 +9,5 @@ export const config = {
     '/wallet/:path*', 
     '/settings/:path*',
     '/messages/:path*',
-    '/projects/:path*',
-    '/hackathons/:path*',
-    '/grants/:path*',
-    '/organizations/:path*',
   ],
 };
