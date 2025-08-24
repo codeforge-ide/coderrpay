@@ -41,10 +41,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkSession = async () => {
     try {
+      // First check Civic auth status
+      const civicResponse = await fetch('/api/auth/civic-status');
+      if (civicResponse.ok) {
+        const civicData = await civicResponse.json();
+        if (civicData.isAuthenticated) {
+          console.log('User authenticated via Civic:', civicData.user);
+          setUser({
+            ...civicData.user,
+            provider: 'civic'
+          });
+          localStorage.setItem('user', JSON.stringify({
+            ...civicData.user,
+            provider: 'civic'
+          }));
+          return;
+        }
+      }
+
+      // If no Civic auth, check Appwrite session
       const currentUser = await account.get();
       const userData = mapAppwriteUserToUser(currentUser);
       setUser(userData);
-      // Store user data in localStorage for persistence
       localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       // No active session, clear any stored user data
