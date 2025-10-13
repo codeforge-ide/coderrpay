@@ -14,11 +14,17 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
+    "@stacks/common": "^7.0.2",
+    "@stacks/network": "^7.2.0",
+    "@stacks/transactions": "^7.2.0",
+    "@turnkey/sdk-browser": "^5.11.3",
+    "@turnkey/sdk-server": "^4.10.2",
     "appwrite": "^18.2.0",
     "next": "15.4.6",
     "node-appwrite": "^17.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "secp256k1": "^5.0.1",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
