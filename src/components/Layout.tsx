@@ -13,6 +13,7 @@ import AppThemeProvider from './AppThemeProvider';
 import AuthDrawer from './AuthDrawer';
 import MobileActionFab from './MobileActionFab';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { TurnkeyProvider } from '@/integrations/turnkey';
 
 const drawerWidth = 320;
 
@@ -108,7 +109,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <CivicAuthProvider displayMode="iframe">
         <AuthProvider>
           <LocalCivicAuthProvider>
-            <LayoutContent>{children}</LayoutContent>
+            <TurnkeyProvider>
+              <LayoutContent>{children}</LayoutContent>
+            </TurnkeyProvider>
           </LocalCivicAuthProvider>
         </AuthProvider>
       </CivicAuthProvider>

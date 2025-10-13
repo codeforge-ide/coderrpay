@@ -22,18 +22,20 @@ import {
   MoreHoriz,
   Code,
   MonetizationOn,
-  Business
+  Business,
+  Favorite
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 
 const navItems = [
   { label: 'Home', icon: Home, href: '/', requireAuth: false },
   { label: 'Feed', icon: RssFeed, href: '/feed', requireAuth: false },
+  { label: 'Support', icon: Favorite, href: '/support', requireAuth: false },
   { label: 'Projects', icon: AccountTree, href: '/projects', requireAuth: true },
-  { label: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
 ];
 
 const moreItems = [
+  { label: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
   { label: 'Hackathons', icon: Code, href: '/hackathons', requireAuth: true },
   { label: 'Grants', icon: MonetizationOn, href: '/grants', requireAuth: true },
   { label: 'Organizations', icon: Business, href: '/organizations', requireAuth: true },

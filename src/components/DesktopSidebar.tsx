@@ -20,7 +20,8 @@ import {
   EmojiEvents,
   Business,
   AccountTree,
-  Login
+  Login,
+  Favorite
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { getPageAction } from '@/utils/pageActions';
@@ -30,6 +31,7 @@ const drawerWidth = 320;
 const navItems = [
   { text: 'Home', icon: Home, href: '/', requireAuth: false },
   { text: 'Feed', icon: RssFeed, href: '/feed', requireAuth: false },
+  { text: 'Support Developers', icon: Favorite, href: '/support', requireAuth: false },
   { text: 'Hackathons', icon: Code, href: '/hackathons', requireAuth: true },
   { text: 'Grants', icon: MonetizationOn, href: '/grants', requireAuth: true },
   { text: 'Bounties', icon: EmojiEvents, href: '/bounties', requireAuth: true },
