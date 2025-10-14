@@ -4,13 +4,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { account } from '../lib/appwrite';
 import { sanitizeUsernameFromEmail } from '../utils/sanitizeUsername';
 
-// Add missing context and necessary state/hooks
 interface AuthContextType {
   user: any;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  loginWithCivic: (civicUser: any) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   sendOtp: (email: string) => Promise<{ userId: string; secret?: string }>;
   verifyOtp: (userId: string, otp: string) => Promise<void>;
@@ -41,31 +39,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkSession = async () => {
     try {
-      // First check Civic auth status
-      const civicResponse = await fetch('/api/auth/civic-status');
-      if (civicResponse.ok) {
-        const civicData = await civicResponse.json();
-        if (civicData.isAuthenticated) {
-          console.log('User authenticated via Civic:', civicData.user);
-          setUser({
-            ...civicData.user,
-            provider: 'civic'
-          });
-          localStorage.setItem('user', JSON.stringify({
-            ...civicData.user,
-            provider: 'civic'
-          }));
-          return;
-        }
-      }
-
-      // If no Civic auth, check Appwrite session
       const currentUser = await account.get();
       const userData = mapAppwriteUserToUser(currentUser);
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
-    } catch (error) {
-      // No active session, clear any stored user data
+    } catch (_error) {
       setUser(null);
       localStorage.removeItem('user');
     } finally {
@@ -133,61 +111,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await login(email, password);
     } catch (error) {
       console.error('Registration error:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const loginWithCivic = async (civicUser: any) => {
-    setIsLoading(true);
-    try {
-      // Check if there's already an active session
-      try {
-        const existingUser = await account.get();
-        if (existingUser) {
-          const userData = {
-            ...mapAppwriteUserToUser(existingUser),
-            provider: 'civic',
-            ethereum_address: civicUser.walletAddress,
-          };
-          setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
-          return;
-        }
-      } catch {
-        // No existing session, proceed with Civic login
-      }
-
-      // Generate custom token for Civic user
-      const response = await fetch('/api/auth/civic-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ civicUser }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate custom token');
-      }
-
-      const { userId, secret } = await response.json();
-
-      // Create session with custom token
-      await account.createSession(userId, secret);
-      
-      // Get the authenticated user
-      const currentUser = await account.get();
-      const userData = {
-        ...mapAppwriteUserToUser(currentUser),
-        provider: 'civic',
-        ethereum_address: civicUser.walletAddress,
-      };
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-    } catch (error) {
-      console.error('Error logging in with Civic:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -280,7 +203,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       isAuthenticated,
       isLoading,
       login,
-      loginWithCivic,
       register,
       sendOtp,
       verifyOtp,
