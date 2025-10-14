@@ -3,6 +3,8 @@
 import React from 'react';
 import { Button, Box } from '@mui/material';
 import { GitHub } from '@mui/icons-material';
+import { OAuthProvider } from 'appwrite';
+import { getAccount } from '@/lib/appwrite';
 
 interface FallbackAuthButtonsProps {
   variant?: 'outlined' | 'contained';
@@ -17,9 +19,15 @@ export const FallbackAuthButtons: React.FC<FallbackAuthButtonsProps> = ({
   onAuthSuccess,
 }) => {
   const handleGitHubAuth = async () => {
-    // TODO: Implement GitHub OAuth via Appwrite
-    console.log('GitHub auth via Appwrite OAuth');
-    onAuthSuccess?.();
+    try {
+      const account = getAccount();
+      const success = `${window.location.origin}/`;
+      const failure = `${window.location.origin}/auth-failure`;
+      await account.createOAuth2Session(OAuthProvider.Github, success, failure);
+      onAuthSuccess?.();
+    } catch (error) {
+      console.error('GitHub OAuth error:', error);
+    }
   };
 
   return (

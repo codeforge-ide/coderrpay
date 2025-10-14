@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { account } from '../lib/appwrite';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { getAccount } from '../lib/appwrite';
 import { sanitizeUsernameFromEmail } from '../utils/sanitizeUsername';
 
 interface AuthContextType {
@@ -29,16 +29,12 @@ const useAuth = () => {
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true); // Start with true to check existing session
+  const [isLoading, setIsLoading] = useState(true);
   const [showAuthDrawer, setShowAuthDrawer] = useState(false);
 
-  // Check for existing session on mount
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
+      const account = getAccount();
       const currentUser = await account.get();
       const userData = mapAppwriteUserToUser(currentUser);
       setUser(userData);
@@ -49,27 +45,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  // Dummy functions to avoid ReferenceError (since you requested syntax only)
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
   const mapAppwriteUserToUser = (user: any) => user;
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Check if there's already an active session
-      try {
-        const existingUser = await account.get();
-        if (existingUser) {
-          const userData = mapAppwriteUserToUser(existingUser);
-          setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
-          return;
-        }
-      } catch {
-        // No existing session, proceed with login
-      }
-
+      const account = getAccount();
       await account.createEmailPasswordSession(email, password);
       const currentUser = await account.get();
       const userData = mapAppwriteUserToUser(currentUser);
@@ -86,28 +73,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // Check if there's already an active session
-      try {
-        const existingUser = await account.get();
-        if (existingUser) {
-          setUser(mapAppwriteUserToUser(existingUser));
-          return;
-        }
-      } catch {
-        // No existing session, proceed with registration
-      }
-
+      const account = getAccount();
       try {
         await account.create('unique()', email, password, sanitizeUsernameFromEmail(email));
       } catch (error: any) {
-        // If account already exists, try to login instead
         if (error.code === 409 || error.message?.includes('already exists')) {
           await login(email, password);
           return;
         }
         throw error;
       }
-      
       await login(email, password);
     } catch (error) {
       console.error('Registration error:', error);
@@ -120,7 +95,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const sendOtp = async (email: string) => {
     setIsLoading(true);
     try {
-      // createEmailToken is the correct method for OTP
+      const account = getAccount();
       const response = await account.createEmailToken('unique()', email);
       return { userId: response.userId, secret: response.secret };
     } catch (error) {
