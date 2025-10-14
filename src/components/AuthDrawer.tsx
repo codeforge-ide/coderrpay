@@ -115,7 +115,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
     }
   };
 
-  const handleCivicAuthSuccess = () => {
+  const handleSocialAuthSuccess = () => {
     onAuthSuccess();
     handleClose();
   };
@@ -285,7 +285,7 @@ export default function AuthDrawer({ open, onClose, onAuthSuccess }: AuthDrawerP
             {/* Social Auth */}
             <Box sx={{ mb: 2 }}>
               <IntegrationAuthButtons 
-                onAuthSuccess={handleCivicAuthSuccess} 
+                onAuthSuccess={handleSocialAuthSuccess} 
                 onClose={handleClose}
               />
             </Box>

@@ -100,21 +100,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   );
 }
 
-import { CivicAuthProvider } from '@civic/auth/nextjs';
-import { CivicAuthProvider as LocalCivicAuthProvider } from '@/integrations/civic/providers/CivicAuthProvider';
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AppThemeProvider>
-      <CivicAuthProvider displayMode="iframe">
-        <AuthProvider>
-          <LocalCivicAuthProvider>
-            <TurnkeyProvider>
-              <LayoutContent>{children}</LayoutContent>
-            </TurnkeyProvider>
-          </LocalCivicAuthProvider>
-        </AuthProvider>
-      </CivicAuthProvider>
+      <AuthProvider>
+        <TurnkeyProvider>
+          <LayoutContent>{children}</LayoutContent>
+        </TurnkeyProvider>
+      </AuthProvider>
     </AppThemeProvider>
   );
 }
