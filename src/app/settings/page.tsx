@@ -9,18 +9,15 @@ import {
   Card,
   CardContent,
   Switch,
-  FormControlLabel,
   Avatar,
   TextField,
   Button,
-  Chip,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   ListItemSecondaryAction,
   Divider,
-  IconButton,
 } from '@mui/material';
 import {
   Settings,
@@ -28,7 +25,6 @@ import {
   LightMode,
   DarkMode,
   Notifications,
-  Link as LinkIcon,
   GitHub,
   LinkedIn,
 } from '@mui/icons-material';

@@ -13,7 +13,6 @@ import {
   Grid,
   Chip,
   IconButton,
-  Link as MuiLink,
 } from '@mui/material';
 import {
   GitHub,
