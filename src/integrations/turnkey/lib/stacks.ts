@@ -1,5 +1,4 @@
 import { publicKeyToAddress } from '@stacks/transactions';
-import { StacksTestnet } from '@stacks/network';
 
 /**
  * Derives a Stacks address from a secp256k1 public key
@@ -12,7 +11,7 @@ export function deriveStacksAddress(publicKey: string): string {
     // Convert to Buffer
     const pubKeyBuffer = Buffer.from(cleanPubKey, 'hex');
     
-    // Derive Stacks address using testnet
+    // Derive Stacks address
     const address = publicKeyToAddress(pubKeyBuffer);
     return address;
   } catch (error) {

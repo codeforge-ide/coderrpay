@@ -240,7 +240,7 @@ export default function SupportPage() {
 
       <Grid container spacing={3}>
         {DEVELOPERS.map((developer) => (
-          <Grid item xs={12} md={6} lg={4} key={developer.id}>
+          <Grid size={{ xs: 12, md: 6, lg: 4 }} key={developer.id}>
             <DeveloperCard
               developer={developer}
               onSupport={() => handleSupport(developer)}
