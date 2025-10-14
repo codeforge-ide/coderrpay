@@ -214,47 +214,6 @@ export default function Home() {
           />
         </Box>
       )}
-          </Card>
-
-          <Card sx={{ flex: 1, minWidth: 158 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="body1" sx={{ color: 'text.primary', mb: 1, fontWeight: 500 }}>
-                Active Sponsorships
-              </Typography>
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  color: 'text.primary',
-                  fontWeight: 700,
-                  fontSize: '1.5rem',
-                  letterSpacing: '-0.01em'
-                }}
-              >
-                {activeSponsorships}
-              </Typography>
-            </CardContent>
-          </Card>
-
-          <Card sx={{ flex: 1, minWidth: 158 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="body1" sx={{ color: 'text.primary', mb: 1, fontWeight: 500 }}>
-                Hackathons Participated
-              </Typography>
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  color: 'text.primary',
-                  fontWeight: 700,
-                  fontSize: '1.5rem',
-                  letterSpacing: '-0.01em'
-                }}
-              >
-                {hackathonsParticipated}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
 
       {/* Recent Activity Section */}
       <Typography 
