@@ -55,7 +55,7 @@ export default function GrantsPage() {
                 No active applications
               </Typography>
               <Typography sx={{ color: 'text.secondary', mb: 2 }}>
-                You haven't submitted any grant applications yet. Browse funding opportunities to get started.
+                You haven&apos;t submitted any grant applications yet. Browse funding opportunities to get started.
               </Typography>
               <Button variant="contained">Browse Opportunities</Button>
             </CardContent>
@@ -73,7 +73,7 @@ export default function GrantsPage() {
                 No past applications
               </Typography>
               <Typography sx={{ color: 'text.secondary', mb: 2 }}>
-                You haven't submitted any grant applications yet. Browse funding opportunities to get started.
+                You haven&apos;t submitted any grant applications yet. Browse funding opportunities to get started.
               </Typography>
               <Button variant="contained">Browse Opportunities</Button>
             </CardContent>

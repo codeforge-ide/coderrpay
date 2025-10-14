@@ -7,7 +7,14 @@ import { TurnkeyWalletCard } from '@/integrations/turnkey';
 import { useState, useEffect } from 'react';
 
 export default function WalletPage() {
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<Array<{
+    id: string;
+    type: string;
+    amount: string;
+    recipient?: string;
+    timestamp: number;
+    status: string;
+  }>>([]);
 
   useEffect(() => {
     // Load transaction history

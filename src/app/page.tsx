@@ -6,16 +6,12 @@ import {
   Box, 
   Card, 
   CardContent, 
-  Button,
-  Avatar,
-  IconButton,
   Skeleton
 } from '@mui/material';
 import { 
   MonetizationOn,
   Code,
-  GitHub,
-  MoreVert
+  GitHub
 } from '@mui/icons-material';
 import { useAppStore } from '@/store/useAppStore';
 

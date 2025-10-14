@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { TextField, InputAdornment, Tabs, Tab, Box, Avatar, Typography, IconButton, Card, CardContent } from '@mui/material';
 import { Search, Favorite, ChatBubbleOutline, Send } from '@mui/icons-material';
-import ProjectCard from '@/components/ProjectCard';
 import { mockProjects } from '@/data/projects';
 
 interface TabPanelProps {
@@ -28,7 +27,19 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-function PostCard({ post }: { post: any }) {
+interface Post {
+  user: {
+    avatar: string;
+    name: string;
+    username: string;
+  };
+  timestamp: string;
+  content: string;
+  likes: number;
+  comments: number;
+}
+
+function PostCard({ post }: { post: Post }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes);
 
@@ -156,29 +167,14 @@ export default function FeedPage() {
   const [mainTab, setMainTab] = useState(0);
   const [feedTab, setFeedTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('stars');
 
-  const handleMainTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleMainTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setMainTab(newValue);
   };
 
-  const handleFeedTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleFeedTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setFeedTab(newValue);
   };
-
-  const filteredProjects = mockProjects
-    .filter((project) =>
-      project.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (sortBy === 'stars') {
-        return b.stars - a.stars;
-      }
-      if (sortBy === 'name') {
-        return a.name.localeCompare(b.name);
-      }
-      return 0;
-    });
 
   return (
     <Box sx={{ maxWidth: 960, flex: 1 }}>

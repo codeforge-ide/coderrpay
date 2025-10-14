@@ -43,7 +43,6 @@ export const SupportModal: React.FC<SupportModalProps> = ({
   onClose,
   recipientName,
   recipientAddress,
-  recipientAvatar,
 }) => {
   const { wallet } = useTurnkey();
   const { status, txId, error, sendSbtc, reset } = useTransaction();
@@ -251,7 +250,7 @@ export const SupportModal: React.FC<SupportModalProps> = ({
               Transaction Successful!
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              You've successfully supported {recipientName} with {formatSbtcAmount(parseFloat(amount))} sBTC
+              You&apos;ve successfully supported {recipientName} with {formatSbtcAmount(parseFloat(amount))} sBTC
             </Typography>
 
             {txId && (

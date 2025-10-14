@@ -88,7 +88,7 @@ export default function MessagesPage() {
                   color="primary"
                   sx={{ mb: 1 }}
                 >
-                  <Image />
+                  <Image alt="Attach image" />
                 </IconButton>
                 <IconButton
                   color="primary"
