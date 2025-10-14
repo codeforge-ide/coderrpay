@@ -26,20 +26,31 @@ export const TurnkeyProvider: React.FC<TurnkeyProviderProps> = ({ children }) =>
   const [wallet, setWallet] = useState<TurnkeyWallet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
+  
+  // Get auth state from AuthContext
+  const authContext = useAuth();
+  const isAuthLoading = authContext?.isLoading ?? true;
+  const isAuthAuthenticated = authContext?.isAuthenticated ?? false;
 
   useEffect(() => {
     // Initialize Turnkey and check for existing session
     initializeTurnkey();
   }, []);
 
-  // Auto-create wallet if user is authenticated but has no wallet
+  // Auto-create wallet when user is authenticated but has no wallet
   useEffect(() => {
-    if (!isLoading && hasCheckedAuth && user && !wallet) {
-      createWallet().catch(error => {
-        console.error('Auto wallet creation failed:', error);
-      });
+    if (!isLoading && !isAuthLoading && hasCheckedAuth) {
+      if (isAuthAuthenticated && !user) {
+        // User is authenticated in the app but doesn't have Turnkey setup
+        createWallet().catch(error => {
+          console.error('Auto wallet creation failed:', error);
+        });
+      } else if (!isAuthAuthenticated && (user || wallet)) {
+        // User logged out, clear Turnkey data
+        logout();
+      }
     }
-  }, [isLoading, hasCheckedAuth, user, wallet]);
+  }, [isLoading, isAuthLoading, hasCheckedAuth, isAuthAuthenticated, user, wallet]);
 
   const initializeTurnkey = async () => {
     try {
