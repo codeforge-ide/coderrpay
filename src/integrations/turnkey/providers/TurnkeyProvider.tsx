@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { TurnkeyUser, TurnkeyWallet } from '../types';
 import { deriveStacksAddress } from '../lib/stacks';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TurnkeyContextType {
   user: TurnkeyUser | null;
@@ -24,11 +25,21 @@ export const TurnkeyProvider: React.FC<TurnkeyProviderProps> = ({ children }) =>
   const [user, setUser] = useState<TurnkeyUser | null>(null);
   const [wallet, setWallet] = useState<TurnkeyWallet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
 
   useEffect(() => {
     // Initialize Turnkey and check for existing session
     initializeTurnkey();
   }, []);
+
+  // Auto-create wallet if user is authenticated but has no wallet
+  useEffect(() => {
+    if (!isLoading && hasCheckedAuth && user && !wallet) {
+      createWallet().catch(error => {
+        console.error('Auto wallet creation failed:', error);
+      });
+    }
+  }, [isLoading, hasCheckedAuth, user, wallet]);
 
   const initializeTurnkey = async () => {
     try {
@@ -50,6 +61,7 @@ export const TurnkeyProvider: React.FC<TurnkeyProviderProps> = ({ children }) =>
       console.error('Failed to initialize Turnkey:', error);
     } finally {
       setIsLoading(false);
+      setHasCheckedAuth(true);
     }
   };
 
